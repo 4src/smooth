@@ -9,6 +9,7 @@ local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
 local eg = {}
 local _print = print
 print = function(...) if not the.quiet then _print(...) end end
+
 -- start-up code -----------------------------------------------
 local function try(s, fun)
   math.randomseed(the.seed)
@@ -40,11 +41,15 @@ function eg.csv(      n)
   n=0; for t in l.csv(the.file) do n = n + #t end 
   return n ==399*8 end  
 
+function eg.cols(     c)
+  c=COLS{"Name","Age","employed","Happy+"}
+  for _,col in pairs(c.all) do print(div(col), col) end end
+
 function eg.data(     d)
   d = DATA(the.file)
-  print(o(d.cols.x)) end
+  for _,col in pairs(d.cols.all) do print(col:div(), col) end end
+  --print(o(d.cols.x)) end
 --  print(o(d:stats())) end
-  
 
 function eg.sym(s)
   s = SYM()
@@ -57,7 +62,7 @@ function eg.num(     n,md,sd)
   for i=1,100 do n:add( i) end
   md,sd = n:mid(), n:div()
   print(md,sd)
-  return 49 < md and md < 51 and 30 < sd and sd < 32 end
+  return 50 < md and md < 51 and 29 < sd and sd < 30 end
 
 function eg.stats(     d)
   d = DATA(the.file)

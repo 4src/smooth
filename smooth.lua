@@ -17,10 +17,11 @@ local ROW, DATA    = l.obj"ROW", l.obj"DATA"
 
 -- SYM, NUM ----------------------------------------------------
 function SYM:new(at,s) 
-    return {symp=true, at=at, s=s, n=0, has={}, mode=nil, most=0} end
+    return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0} end
 
 function NUM:new(at,s) 
-  return {at=at, s=s, n=0, mu=0, m2=0, sd=0, lo=math.huge, hi= -math.huge,
+  return {at=at, txt=s, n=0, mu=0, m2=0, sd=0, 
+          lo=math.huge, hi= -math.huge,
           heaven = (s or ""):find"-$" and 0 or 1} end
 
 function NUM:add(x,     d)
@@ -45,9 +46,9 @@ function NUM:div()
   self.sd = self.sd or (self.m2/(self.n - 1))^.5; return self.sd end
 
 function SYM:mid() return self.mode end
-function SYM:div() return l.ent(self.has) end 
+function SYM:div() return l.ent(self.has) end
 
-function NUM:bin(x) return (x-self.mu)/self:sd()/(6/the.bins)// 1 end
+function NUM:bin(x) return (x-self.mu)/self:div()/(6/the.bins)// 1 end
 function SYM:bin(x) return x end
 
 function NUM:norm(x) 
@@ -61,11 +62,12 @@ function COLS:new(t,       _,what,where)
     where = s:find"X$" and _ or (s:find"^[+-!]$" and self.x or self.y)
     l.push(where, l.push(self.all, what(at,s)))end end
 
-function COLS:xs(t) self:adds(self.x, t) end
-function COLS:ys(t) self:adds(self.y, t) end
+function COLS:xs(t) self:adds(self.x, t); return self end
+function COLS:ys(t) self:adds(self.y, t); return self end
 
 function COLS:adds(xycols, t)
-  for _,col in pairs(xycols) do col:add(t.cells[col.at]) end end
+  for _,col in pairs(xycols) do
+    col:add(t.cells[col.at]) end end
 
 --- ROW --------------------------------------------------------
 function ROW:new(t) return {cells=t} end
@@ -88,7 +90,7 @@ function DATA:new(src)
 
 function DATA:add(row)
   if   self.cols
-  then self.cols:xs(row); self.cols:ys(row)
+  then self.cols:xs(row):ys(row)
   else self.cols = COLS(row.cells) end end
 
 function DATA:stats(  fun,cols,digits,     t,get)
