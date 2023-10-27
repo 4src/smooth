@@ -1,48 +1,60 @@
-fmt=string.format
+l={}
 
-function items(t,    n,i,u)
-  u={}; for k,_ in pairs(t) do u[1+#u] = k; end
-  table.sort(u)
-  i=0
-  return function()
-    if i < #u then i=i+1; return u[i], t[u[i]] end end end
-
-function rnd(x,d)
-  if math.floor(x) == x then return x
-  else local mult = 10^(d or 2)
-       return math.floor(x*mult+0.5)/mult end end
-
-function o(t,d,     u)
-  if type(t) == "function" then return "()" end
-  if type(t) == "number"   then return fmt("%s",rnd(t,d)) end
-  if type(t) ~= "table"    then return fmt("%s",t) end
-  u = {}
-  if   #t > 0
-  then for _,v in pairs(t) do u[1+#u]=fmt("%s",      o(v,d)) end
-  else for k,v in items(t) do u[1+#u]=fmt(":%s %s",k,o(v,d)) end end
-  return "{"..table.concat(u," ").."}" end
-
+-- objects --------------------------------------------
 local id=0
-function obj(s,    t)
+function l.obj(s,    t)
   t = {}
   return setmetatable(t, { __call=function(klass,...)
     klass.__index    = klass
-    klass.__tostring = o
+    klass.__tostring = l.o
     id = id + 1
     local i = setmetatable({ako=s,id=id},t)
     return setmetatable(t.init(i,...) or i,t) end}) end
 
-local Emp=obj"Emp"
+-- lists --------------------------------------------
+function l.push(t,x) t[1+#t]=x ; return x end
 
-function Emp:init(x) self.x=x; self:y(x) end
+function l.shuffle(t,   j)
+  for i=#t,2,-1 do j=math.random(i); t[i],t[j]=t[j],t[i] end; return t end
 
-function Emp:y(x) print(self.x) end
+function l.items(t,    n,i,u)
+  u={}; for k,_ in pairs(t) do u[1+#u] = k; end
+  table.sort(u)
+  i=0
+  return function()
+    if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
-e=Emp(10)
-g=Emp(10)
-print"---"
-g.m = e
+-- maths --------------------------------------------
+function l.rnd(x,d)
+  if math.floor(x) == x then return x
+  else local mult = 10^(d or 2)
+       return math.floor(x*mult+0.5)/mult end end
 
-print(o{g,22/7,{g}})
+-- strings --------------------------------------------
+l.fmt=string.format
 
-print(e.ako)
+function l.o(t,d,     u)
+  if type(t) == "function" then return "()" end
+  if type(t) == "number"   then return l.fmt("%s",l.rnd(t,d)) end
+  if type(t) ~= "table"    then return l.fmt("%s",t) end
+  u = {}
+  if   #t > 0
+  then for _,v in   pairs(t) do u[1+#u]=l.fmt("%s",      l.o(v,d)) end
+  else for k,v in l.items(t) do u[1+#u]=l.fmt(":%s %s",k,l.o(v,d)) end end
+  return "{"..table.concat(u," ").."}" end
+
+function l.make(s,    fun)
+  function fun(s) return s=="true" or (s~="false" and s) end
+  return math.tointeger(s) or tonumber(s) or fun(s:match'^%s*(.*%S)') end
+
+function l.csv(sFilename,fun,    src) 
+  src = io.input(sFilename)
+  return function(    s,t)
+    s = io.read()
+    if   s 
+    then t={}; for s1 in s:gmatch("([^,]+)") do push(t,l.make(s1)) end
+          return (fun or ROW)(t)
+    else io.close(src) end end end
+
+------------------------------------------------------------
+return l

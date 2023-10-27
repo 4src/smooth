@@ -1,6 +1,6 @@
 -- vim: set et sts=2 sw=2 ts=2 :  
 the = {file="../data/auto93.csv", m=2, k=1, bins=6}
-l = {}
+l = require"lib"
 -------------------------------------------------
 function SYM(at,s) 
     return {symp=true, at=at,s=s,has={},mode=nil,most=0} end
