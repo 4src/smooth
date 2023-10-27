@@ -15,7 +15,7 @@ function l.obj(s,    t)
     klass.__tostring = l.o
     id = id + 1
     local i = setmetatable({ako=s,id=id},t)
-    return setmetatable(t.init(i,...) or i,t) end}) end
+    return setmetatable(t.new(i,...) or i,t) end}) end
 
 -- lists -------------------------------------------------------
 function l.push(t,x) t[1+#t]=x ; return x end
@@ -59,20 +59,19 @@ function l.make(s,    fun)
   function fun(s) return s=="true" or (s~="false" and s) end
   return math.tointeger(s) or tonumber(s) or fun(s:match'^%s*(.*%S)') end
 
-function l.csv(sFilename,fun,    src) 
+function l.csv(sFilename,   src) 
   src = io.input(sFilename)
   return function(    s,t)
     s = io.read()
     if   s 
-    then t={}; for s1 in s:gmatch("([^,]+)") do push(t,l.make(s1)) end
-          return (fun or ROW)(t)
+    then t={}; for s1 in s:gmatch("([^,]+)") do l.push(t,l.make(s1)) end; return t
     else io.close(src) end end end
 
 -- settings ----------------------------------------------------
-function l.settings(s,    t)
+function l.settings(s,    t,pat)
   t={}
-  for k,s1 in s:gmatch("\n[%s]+[-][%S][%s]+[-][-]([%S]+)[^\n]+= ([%S]+)") do
-    t[k]= l.make(s1) end
+  pat = "\n[%s]+[-][%S][%s]+[-][-]([%S]+)[^\n]+= ([%S]+)"
+  for k,s1 in s:gmatch(pat) do t[k]= l.make(s1) end
   return t,s end
 
 function l.cli(t)
@@ -84,15 +83,5 @@ function l.cli(t)
         t[k] = l.make(v) end end end
   return t end
 
-
-
-function l.run(name,fun,settings)
-  math.randomseed(settings.seed)
-
-function l.main(funs,settings)
-  l.cli(settings)
-  for k,fun in pairs(funs) do
-    for _,arg in pairs(arg) do
-  end
 ----------------------------------------------------------------
 return l
