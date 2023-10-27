@@ -31,12 +31,12 @@ function l.items(t,    n,i,u)
     if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
 -- maths -------------------------------------------------------
-function l.rnd(x,d)
+function l.rnd(x,  d)
   if math.floor(x) == x then return x
   else local mult = 10^(d or 2)
        return math.floor(x*mult+0.5)/mult end end
 
-function ent(t,     e,N)
+function l.ent(t,     e,N)
   e,N = 0,0
   for _,n in pairs(t) do N = N + n end
   for _,n in pairs(t) do e = e - n/N*math.log(n/N,2) end
@@ -83,6 +83,16 @@ function l.cli(t)
         v= ((v=="false" and "true") or (v=="true" and "false") or arg[n+1])
         t[k] = l.make(v) end end end
   return t end
- 
+
+
+
+function l.run(name,fun,settings)
+  math.randomseed(settings.seed)
+
+function l.main(funs,settings)
+  l.cli(settings)
+  for k,fun in pairs(funs) do
+    for _,arg in pairs(arg) do
+  end
 ----------------------------------------------------------------
 return l

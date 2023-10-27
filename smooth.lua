@@ -34,11 +34,9 @@ function NUM:div()
 
 function SYM:mid() return self.mode end
 function SYM:div() return l.ent(self.has) end 
- 
 
-
-function norm(num,x)
-  return x=="?" and x or (x - num.lo)/ (num.hi - num.lo + 1e-30) end
+function NUM:norm(x)
+  return x=="?" and x or (x - self.lo)/ (self.hi - self.lo + 1e-30) end
 -------------------------------------------------
 function COLS(t,       what,where)     
   local all,x,y,_ = {},{},{},{}
