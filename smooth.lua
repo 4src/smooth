@@ -4,6 +4,10 @@ local the,help = l.settings[[
 SMOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
+USAGE: 
+  smo=require"smooth"
+  -- then see the "eg" functions in eg.lua
+
 OPTIONS:
   -b --bins     number of bins                  = 6
   -f --file     file name                       = ../data/auto93.csv
@@ -11,6 +15,7 @@ OPTIONS:
   -m --m        low frequency hack for E        = 2
   -s --seed     random seed                     = 1234567891
   -q --quiet    hide print output               = false]]
+
 
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW, DATA    = l.obj"ROW", l.obj"DATA"
@@ -30,7 +35,7 @@ function NUM:add(x,     d)
     d       = x - self.mu
     self.mu = self.mu + d/self.n
     self.m2 = self.m2 + d*(x - self.mu)
-    self.sd = nil
+    self.sd = self.n > 1 and (self.m2/(self.n - 1))^.5 or 0
     if x > self.hi then self.hi = x end
     if x < self.lo then self.lo = x end end end
 
@@ -42,10 +47,9 @@ function SYM:add(x,     tmp)
     if tmp > self.most then self.most,self.mode = tmp,x end end end
 
 function NUM:mid() return self.mu end
-function NUM:div() 
-  self.sd = self.sd or (self.m2/(self.n - 1))^.5; return self.sd end
-
 function SYM:mid() return self.mode end
+
+function NUM:div() return self.sd end
 function SYM:div() return l.ent(self.has) end
 
 function NUM:bin(x) return (x-self.mu)/self:div()/(6/the.bins)// 1 end

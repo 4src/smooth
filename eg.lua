@@ -2,7 +2,7 @@ local smo = require"smooth"
 local l   = require"lib" 
 
 local o,push        = l.o, l.push
-local the,help      = smo.the,smo.help
+local the           = smo.the
 local SYM,NUM,COLS  = smo.SYM,  smo.NUM, smo.COLS
 local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
 
@@ -13,14 +13,14 @@ print = function(...) if not the.quiet then _print(...) end end
 -- start-up code -----------------------------------------------
 local function try(s, fun)
   math.randomseed(the.seed)
-  io.write("⭐️ ".. s.." ")
-  if fun()==false then
-    io.write("❌ FAIL\n"); return true
-  else io.write("✅ \n") end end
+  io.write("▶️ ".. s)
+  if fun()==false 
+  then print(" ❌ FAIL"); return true
+  else print(" ✅ PASS"); return false end  end
 
 local function run()
   l.cli(the)
-  if the.help then print("hello") else
+  if the.help then print(smo.help) else
     for _,com in pairs(arg) do 
       if eg[com] then try(com, eg[com]) end end end
   l.rogues() end
