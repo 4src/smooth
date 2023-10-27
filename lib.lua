@@ -1,6 +1,12 @@
-l={}
+local l={}
+-- lint --------------------------------------------------------
+local b4={}; for k,v in pairs(_ENV) do b4[k]=k end
 
--- objects --------------------------------------------
+function l.rogues()
+  for k,v in pairs(_ENV) do 
+    if not b4[k] then print("#W ?",k,type(v)) end end end
+
+-- objects -----------------------------------------------------
 local id=0
 function l.obj(s,    t)
   t = {}
@@ -11,7 +17,7 @@ function l.obj(s,    t)
     local i = setmetatable({ako=s,id=id},t)
     return setmetatable(t.init(i,...) or i,t) end}) end
 
--- lists --------------------------------------------
+-- lists -------------------------------------------------------
 function l.push(t,x) t[1+#t]=x ; return x end
 
 function l.shuffle(t,   j)
@@ -24,13 +30,19 @@ function l.items(t,    n,i,u)
   return function()
     if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
--- maths --------------------------------------------
+-- maths -------------------------------------------------------
 function l.rnd(x,d)
   if math.floor(x) == x then return x
   else local mult = 10^(d or 2)
        return math.floor(x*mult+0.5)/mult end end
 
--- strings --------------------------------------------
+function ent(t,     e,N)
+  e,N = 0,0
+  for _,n in pairs(t) do N = N + n end
+  for _,n in pairs(t) do e = e - n/N*math.log(n/N,2) end
+  return e end
+
+-- strings -----------------------------------------------------
 l.fmt=string.format
 
 function l.o(t,d,     u)
@@ -56,5 +68,21 @@ function l.csv(sFilename,fun,    src)
           return (fun or ROW)(t)
     else io.close(src) end end end
 
-------------------------------------------------------------
+-- settings ----------------------------------------------------
+function l.settings(s,    t)
+  t={}
+  for k,s1 in s:gmatch("\n[%s]+[-][%S][%s]+[-][-]([%S]+)[^\n]+= ([%S]+)") do
+    t[k]= l.make(s1) end
+  return t,s end
+
+function l.cli(t)
+  for k,v in pairs(t) do
+    v = tostring(v)
+    for n,x in ipairs(arg) do
+      if x=="-"..(k:sub(1,1)) or x=="--"..k then
+        v= ((v=="false" and "true") or (v=="true" and "false") or arg[n+1])
+        t[k] = l.make(v) end end end
+  return t end
+ 
+----------------------------------------------------------------
 return l

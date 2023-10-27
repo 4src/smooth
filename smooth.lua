@@ -1,6 +1,8 @@
 -- vim: set et sts=2 sw=2 ts=2 :  
-the = {file="../data/auto93.csv", m=2, k=1, bins=6}
-l = require"lib"
+local l = require"lib"
+local the = {file="../data/auto93.csv", m=2, k=1, bins=6}
+
+local SYM,NUM,DATA = l.obj"SYM", l.obj"NUM", l.obj"DATA"
 -------------------------------------------------
 function SYM(at,s) 
     return {symp=true, at=at,s=s,has={},mode=nil,most=0} end
@@ -9,34 +11,31 @@ function NUM(at,s)
   return {at=at,s=s,n=0, mu=0, m2=0, sd=0, lo=math.huge, hi= -math.huge,
           heaven = (s or ""):find"-$" and 0 or 1} end
 
-function add(col,x,     _sym,_num) 
-  function _sym(     tmp)
-    tmp = 1 + (col.has[x] or 0)
-    col.has[x] = tmp
-    if tmp>col.most then col.most,col.mode=tmp,x end end
-  function _num(     d)
-    d    = x - i.mu
-    i.mu = i.mu + d/i.n
-    i.m2 = i.m2 + d*(x - i.mu)
-    i.sd = nil
-    if x > i.hi then i.hi = x end
-    if x < i.lo then i.lo = x end end
+function NUM:add(x,     d)
   if x~="?" then
-    col.n = col.n + 1; (col.symp and _sym or _num)() end
-  return col end
+    self.n = self.n + 1
+    d       = x - self.mu
+    self.mu = self.mu + d/self.n
+    self.m2 = self.m2 + d*(x - self.mu)
+    self.sd = nil
+    if x > self.hi then self.hi = x end
+    if x < self.lo then self.lo = x end end end
 
-function mid(col) return col.symp and col.mode     or col.mu end
-function div(col) return col.symp and ent(col.has) or sd(col) end
+function SYM:add(x,     tmp)
+  if x~="?" then
+    self.n = self.n + 1
+    tmp = 1 + (self.has[x] or 0)
+    self.has[x] = tmp
+    if tmp > self.most then self.most,self.mode = tmp,x end end
 
-function sd(num) 
-  num.sd = num.sd or (num.m2/(num.n - 1))^.5
-  return num.sd end
+function NUM:mid() return self.mu end
+function NUM:div() 
+  self.sd = self.sd or (num.m2/(num.n - 1))^.5; return self.sd end
 
-function ent(t,     e,N)  
-  e,N = 0,0
-  for _,n in pairs(t) do N = N + n end
-  for _,n in pairs(t) do e = e - n/N*math.log(n/N,2) end
-  return e end
+function SYM:mid() return self.mode end
+function SYM:div() return l.ent(self.has) end 
+ 
+
 
 function norm(num,x)
   return x=="?" and x or (x - num.lo)/ (num.hi - num.lo + 1e-30) end
@@ -97,35 +96,3 @@ function main()
     add(ds,d)
 
       adds(cols,"x",t)
-
-
-    
-  end
-    
-  end
-function l.push(t,x) t[1+#t]=x ; return x end
-
-function l.shuffle(t,   j)
-  for i=#t,2,-1 do j=math.random(i); t[i],t[j]=t[j],t[i] end; return t end
-
-function l.cat(t)
-  if type(t) ~= "table" then return tostring(t) end
-  u={}
-  for k,v in pairs(t) do 
-     u[1+#u]= #t>0 and l.cat(v) or string.format(":%s %s",k,l.cat(v)) end
-  if #t==0 then table.sort(u) end
-  return "{"..table.concat(u," ").."}" end
-
-function l.make(s,    fun)
-  function fun(s) return s=="true" or (s~="false" and s) end
-  return math.tointeger(s) or tonumber(s) or fun(s:match'^%s*(.*%S)') end
-
-function l.csv(sFilename,fun,    src) 
-  src = io.input(sFilename)
-  return function(    s,t)
-    s = io.read()
-    if   s 
-    then t={}; for s1 in s:gmatch("([^,]+)") do push(t,l.make(s1)) end
-         return (fun or ROW)(t)
-    else io.close(src) end end end
-------------------------------------------------- 
