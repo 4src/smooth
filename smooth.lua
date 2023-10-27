@@ -5,12 +5,12 @@ SMOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
 OPTIONS:
-  -b --bins    number of bins                  = 6
-  -f --file    file name                       = ../data/auto93.csv
-  -k --k       low frequency hack for classes  = 1 
-  -m --m       low frequency hack for E        = 2
-  -s --seed    random seed                     = 1234567891
-  -q --quiet   hide print output               = false]]
+  -b --bins     number of bins                  = 6
+  -f --file     file name                       = ../data/auto93.csv
+  -k --k        low frequency hack for classes  = 1 
+  -m --m        low frequency hack for E        = 2
+  -s --seed     random seed                     = 1234567891
+  -q --quiet    hide print output               = false]]
 
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW, DATA    = l.obj"ROW", l.obj"DATA"
