@@ -13,10 +13,10 @@ print = function(...) if not the.quiet then _print(...) end end
 -- start-up code -----------------------------------------------
 local function try(s, fun)
   math.randomseed(the.seed)
-  io.write("▶️ ".. s)
+  io.write("▶️ ".. s.." ")
   if fun()==false 
   then print(" ❌ FAIL"); return true
-  else print(" ✅ PASS"); return false end  end
+  else print("✅ PASS"); return false end  end
 
 local function run()
   l.cli(the)
