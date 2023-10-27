@@ -1,3 +1,5 @@
+SHELL = /bin/bash
+MAKEFLAGS += --silent
 ok: ##               pull
 	git pull
 
@@ -12,8 +14,8 @@ n=--source 'NR==1{ print "![](https://img.shields.io/badge/tests-failing-red)"; 
 y=--source 'NR==1{ print "![](https://img.shields.io/badge/tests-failing-green)"; next} 1' 
 
  tested: ##              run tests, update README badge
-	@if lua eg.lua all 1>&2; then gawk  $y README.md;  else gawk  $n README.md; fi> _tmp
-	@mv _tmp README.md
+	if lua eg.lua all 1>&2; then gawk  $y README.md;  else gawk  $n README.md; fi> _tmp
+	mv _tmp README.md
 	
 help:  ##               show help
 	@echo ""; echo "ACTIONS:"
