@@ -1,11 +1,15 @@
 local smo = require"smooth"
-local l   = require"lib"
-local the, help = smo.the, smo.help
+local l   = require"lib" 
+
+local o,push        = l.o, l.push
+local the,help      = smo.the,smo.help
+local SYM,NUM,COLS  = smo.SYM,  smo.NUM, smo.COLS
+local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
 
 local eg = {}
 local _print = print
 print = function(...) if not the.quiet then _print(...) end end
-
+-- start-up code -----------------------------------------------
 local function try(s, fun)
   math.randomseed(the.seed)
   io.write("⭐️ ".. s.." ")
@@ -38,7 +42,8 @@ function eg.csv(      n)
 
 function eg.data(     d)
   d = DATA(the.file)
-  oo(d:stats()) end
+  print(o(d.cols.x)) end
+--  print(o(d:stats())) end
   
 
 function eg.sym(s)
@@ -75,14 +80,14 @@ function eg.dist(     t,r1,r2,d)
   for i=1,20 do 
     r1,r2 = l.any(d.rows),  l.any(d.rows) 
     push(t, o(d:dist(r1, r2),2)) end 
-  oo(l.sort(t),2) end
+  print(o(l.sort(t),2)) end
 
 function eg.heaven(     t,r1,r2,d)
   t, d = {}, DATA(the.file); 
   for i=1,20 do 
     r1  = l.any(d.rows)
     push(t, d:d2h(r1)) end
-  oo(t,2) end
+  print(o(t,2)) end
 
 function eg.heavens(     t,d,n)
   t, d = {}, DATA(the.file)

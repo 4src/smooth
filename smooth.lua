@@ -17,10 +17,10 @@ local ROW, DATA    = l.obj"ROW", l.obj"DATA"
 
 -- SYM, NUM ----------------------------------------------------
 function SYM:new(at,s) 
-    return {symp=true, at=at,s=s,has={},mode=nil,most=0} end
+    return {symp=true, at=at, s=s, n=0, has={}, mode=nil, most=0} end
 
 function NUM:new(at,s) 
-  return {at=at,s=s,n=0, mu=0, m2=0, sd=0, lo=math.huge, hi= -math.huge,
+  return {at=at, s=s, n=0, mu=0, m2=0, sd=0, lo=math.huge, hi= -math.huge,
           heaven = (s or ""):find"-$" and 0 or 1} end
 
 function NUM:add(x,     d)
@@ -54,7 +54,7 @@ function NUM:norm(x)
   return x=="?" and x or (x - self.lo)/ (self.hi - self.lo + 1e-30) end
 
 -- COLS ---------------------------------------------------------
-function COLS:new(t,       what,where)
+function COLS:new(t,       _,what,where)
   self.all, self.x, self.y,_ = {},{},{},{}
   for at,s in pairs(t) do
     what  = s:find"^[A-Z]" and NUM or SYM
@@ -90,6 +90,12 @@ function DATA:add(row)
   if   self.cols
   then self.cols:xs(row); self.cols:ys(row)
   else self.cols = COLS(row.cells) end end
+
+function DATA:stats(  fun,cols,digits,     t,get)
+  function get(col) return getmetatable(col)[fun or "mid"](col) end
+  t = {N = #self.rows}
+  for _,col in pairs(cols or self.cols.y) do t[col.txt] = l.o(get(col),digits) end
+  return t end
 
 function DATA:like(row,  n,h)
   local prior,out,col,b,inc
