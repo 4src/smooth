@@ -43,11 +43,11 @@ function eg.csv(      n)
 
 function eg.cols(     c)
   c=COLS{"Name","Age","employed","Happy+"}
-  for _,col in pairs(c.all) do print(div(col), col) end end
+  for _,col in pairs(c.all) do print(col:div(), col) end end
 
 function eg.data(     d)
   d = DATA(the.file)
-  for _,col in pairs(d.cols.all) do print(col:div(), col) end end
+  for _,col in pairs(d.cols.all) do print(o{col:mid(),col:div(), col}) end end
   --print(o(d.cols.x)) end
 --  print(o(d:stats())) end
 
