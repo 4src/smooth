@@ -15,7 +15,7 @@ OPTIONS:
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW, DATA    = l.obj"ROW", l.obj"DATA"
 
--------------------------------------------------
+-- SYM, NUM ----------------------------------------------------
 function SYM:new(at,s) 
     return {symp=true, at=at,s=s,has={},mode=nil,most=0} end
 
@@ -53,7 +53,7 @@ function SYM:bin(x) return x end
 function NUM:norm(x) 
   return x=="?" and x or (x - self.lo)/ (self.hi - self.lo + 1e-30) end
 
--------------------------------------------------
+-- COLS ---------------------------------------------------------
 function COLS:new(t,       what,where)
   self.all, self.x, self.y,_ = {},{},{},{}
   for at,s in pairs(t) do
@@ -79,7 +79,7 @@ function ROW:classify(datas,    n,h,most,tmp,out)
     if tmp > most then out,most = k,tmp end end
   return out,most end
 
--------------------------------------------------
+-- DATA --------------------------------------------------------
 function DATA:new(src)
   self.rows, self.cols = {}, nil
   if type(src)=="string" 

@@ -3,7 +3,6 @@ local l   = require"lib"
 local the, help = smo.the, smo.help
 
 local eg = {}
-
 local _print = print
 print = function(...) if not the.quiet then _print(...) end end
 
