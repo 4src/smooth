@@ -5,14 +5,16 @@ save: ##               commit
 	git commit -am saving; git push; git status
 
 %.md: %.lua ## file.md  insert snips from code into markdown
-	gawk -f etc/snips.awk   PASS=1 $< PASS=2 $< > _tmp
+	gawk -f etc/snips.awk PASS=1 $< PASS=2 $< > _tmp
 	mv _tmp $@
 
-bad='1c![](https://img.shields.io/badge/tests-failing-red)'
-good='1c![](https://img.shields.io/badge/tests-passing-green)'
- tests: ##              run tests, update README badge
-	if lua eg.lua  all; then  sed -i $(good)  README.md; else  sed -i $(bad)  README.md; fi 
+n=--source 'NR==1{ print "![](https://img.shields.io/badge/tests-failing-red)"; next}   1'  
+y=--source 'NR==1{ print "![](https://img.shields.io/badge/tests-failing-green)"; next} 1' 
 
+ tests: ##              run tests, update README badge
+	@if lua eg.lua all 1>&2; then gawk  $y README.md;  else gawk  $n README.md; fi> _tmp
+	@mv _tmp README.md
+	
 help:  ##               show help
 	@echo ""; echo "ACTIONS:"
 	@gawk '/^[a-z].*:/ && /##/ { a=$$1; sub(/^.*##/,""); print "\t" a"  " $$0 }' Makefile  

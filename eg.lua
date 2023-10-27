@@ -64,41 +64,41 @@ function eg.num(     n,md,sd)
   print(md,sd)
   return 50 < md and md < 51 and 29 < sd and sd < 30 end
 
-function eg.stats(     d)
-  d = DATA(the.file)
-  print("mid",o(d:stats())) 
-  print("div",o(d:stats(d,"div",d.cols.y))) end
+-- function eg.stats(     d)
+--   d = DATA(the.file)
+--   print("mid",o(d:stats())) 
+--   print("div",o(d:stats(d,"div",d.cols.y))) end
 
-function eg.clone(      d1,d2,s1,s2,good)
-  d1  = DATA(the.file)
-  d2  = d1.clone(d1.rows)
-  s1  = d1:stats()
-  s2  = d2:stats()
-  good= true
-  for k,v in pairs(s1) do good = good and v == s2[k] end 
-  print("original", o(s1))
-  print("cloned  ", o(s2)) 
-  return good end
+-- function eg.clone(      d1,d2,s1,s2,good)
+--   d1  = DATA(the.file)
+--   d2  = d1.clone(d1.rows)
+--   s1  = d1:stats()
+--   s2  = d2:stats()
+--   good= true
+--   for k,v in pairs(s1) do good = good and v == s2[k] end 
+--   print("original", o(s1))
+--   print("cloned  ", o(s2)) 
+--   return good end
 
-function eg.dist(     t,r1,r2,d)
-  t,d = {}, DATA(the.file); 
-  for i=1,20 do 
-    r1,r2 = l.any(d.rows),  l.any(d.rows) 
-    push(t, o(d:dist(r1, r2),2)) end 
-  print(o(l.sort(t),2)) end
+-- function eg.dist(     t,r1,r2,d)
+--   t,d = {}, DATA(the.file); 
+--   for i=1,20 do 
+--     r1,r2 = l.any(d.rows),  l.any(d.rows) 
+--     push(t, o(d:dist(r1, r2),2)) end 
+--   print(o(l.sort(t),2)) end
 
-function eg.heaven(     t,r1,r2,d)
-  t, d = {}, DATA(the.file); 
-  for i=1,20 do 
-    r1  = l.any(d.rows)
-    push(t, d:d2h(r1)) end
-  print(o(t,2)) end
+-- function eg.heaven(     t,r1,r2,d)
+--   t, d = {}, DATA(the.file); 
+--   for i=1,20 do 
+--     r1  = l.any(d.rows)
+--     push(t, d:d2h(r1)) end
+--   print(o(t,2)) end
 
-function eg.heavens(     t,d,n)
-  t, d = {}, DATA(the.file)
-  n = (#d.rows) ^.5  
-  t = l.keysort(d.rows, function(row1,x) return d:d2h(row1) end) 
-  print("best", o(d:clone(l.slice(t,1,n)):stats()))
-  print("worst", o(d:clone(l.slice(t,-n)):stats())) end
+-- function eg.heavens(     t,d,n)
+--   t, d = {}, DATA(the.file)
+--   n = (#d.rows) ^.5  
+--   t = l.keysort(d.rows, function(row1,x) return d:d2h(row1) end) 
+--   print("best", o(d:clone(l.slice(t,1,n)):stats()))
+--   print("worst", o(d:clone(l.slice(t,-n)):stats())) end
 ----------------------------------------------------------------
 run()
