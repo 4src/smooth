@@ -5,7 +5,6 @@ SHELL = /bin/bash
 MAKEFLAGS += --silent
 .PHONY: help do ready saved tested install-codespaces install-mac
 root=$(shell git rev-parse --show-toplevel)
-
 #------------------------------------------------------------------------------
 C1 = '\033[34m'# blue
 C2 = '\033[32m'# green
@@ -35,7 +34,7 @@ n="![](https://img.shields.io/badge/tests-failing-red)"
 y="![](https://img.shields.io/badge/tests-passing-green)"
 
 tested: ##             run tests, update README badge
-	if   lua ../src/eg.lua all 1>&2;        \
+	if   cd ../src/; lua eg.lua all 1>&2;        \
 	then gawk --source 'NR==1 {print $y; next} 1' $(root)/README.md;  \
 	else gawk --source 'NR==1 {print $n; next} 1' $(root)/README.md; fi > _tmp
 	mv _tmp $(root)/README.md 

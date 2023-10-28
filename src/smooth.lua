@@ -10,7 +10,7 @@ USAGE:
 
 OPTIONS:
   -b --bins     number of bins                  = 6
-  -f --file     file name                       = ../data/auto93.csv
+  -f --file     file name                       = ../../data/auto93.csv
   -k --k        low frequency hack for classes  = 1 
   -m --m        low frequency hack for E        = 2
   -s --seed     random seed                     = 1234567891
