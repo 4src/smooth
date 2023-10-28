@@ -7,7 +7,7 @@ ifndef LOUD # disable with make LOUD=1
 .SILENT: 
 endif
 
-WANT = lua gawk  
+WANT = lua gawk
 OK := $(foreach x,$(WANT),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
 
 SHELL     := bash 
