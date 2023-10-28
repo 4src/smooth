@@ -1,5 +1,5 @@
 local smo = require"smooth"
-local l   = require"lib" 
+local l   = require"lib"
 
 local o,push        = l.o, l.push
 local the           = smo.the
@@ -44,6 +44,7 @@ function eg.csv(      n)
 function eg.cols(     c)
   c=COLS{"Name","Age","employed","Happy+"}
   for _,col in pairs(c.all) do print(col:div(), col) end end
+
 
 function eg.data(     d)
   d = DATA(the.file)

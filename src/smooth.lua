@@ -64,7 +64,7 @@ function COLS:new(t,       _,what,where)
   for at,s in pairs(t) do
     what  = s:find"^[A-Z]" and NUM or SYM
     where = s:find"X$" and _ or (s:find"[!+-]$" and self.y or self.x)
-    l.push(where, l.push(self.all, what(at,s)))end end
+    where[at] = l.push(self.all, what(at,s)) end end
 
 function COLS:xs(t) self:adds(self.x, t); return self end
 function COLS:ys(t) self:adds(self.y, t); return self end
@@ -81,9 +81,21 @@ function ROW:classify(datas,    n,h,most,tmp,out)
   most = -math.huge
   for _,data in pairs(datas) do h=h+1; n=n+#data.rows end
   for k,data in pairs(datas) do
-    tmp = data:like(self,n,h)
+    tmp = self:like(data,n,h)
     if tmp > most then out,most = k,tmp end end
   return out,most end
+
+function ROW:like(data,  n,h)
+  local prior,out,col,b,inc
+  prior = (#data.rows + the.k) / (n + the.k * h)
+  out   = math.log(prior)
+  for at,v in pairs(self.cells) do
+    col = data.cols.x[at]
+    if col and v ~= "?" then
+      b   = col:bin(v)
+      inc = ((col.has[b] or 0) + the.m*prior)/(col.n+the.m)
+      out = out + math.log(inc) end end
+  return out end
 
 -- DATA --------------------------------------------------------
 function DATA:new(src)
@@ -91,6 +103,11 @@ function DATA:new(src)
   if type(src)=="string" 
   then for  t in l.csv(the.file)   do self:add(ROW(t)) end
   else for _,t in pairs(src or {}) do self:add(t) end end end
+
+function DATA:clone(rows,      clone)
+  clone = DATA({ROW(self.cols.names)})
+  for _,row in pairs(rows or {}) do clone:add(row) end
+  return clone end
 
 function DATA:add(row)
   if   self.cols
@@ -103,18 +120,6 @@ function DATA:stats(  fun,cols,digits,     t,get)
   t = {N = #self.rows}
   for _,col in pairs(cols or self.cols.y) do t[col.txt] = l.o(get(col),digits) end
   return t end
-
-function DATA:like(row,  n,h)
-  local prior,out,col,b,inc
-  prior = (#self.rows + the.k) / (n + the.k * h)
-  out   = math.log(prior)
-  for at,v in pairs(row) do
-    if v ~= "?" then
-      col = self.cols.all[at]
-      b   = col:bin(v)
-      inc = ((col.has[b] or 0) + the.m*prior)/(col.n+the.m)
-      out = out + math.log(inc) end end
-  return out end
 
 function DATA:d2h(t,    n,d)
   for _,col in pairs(self.cols.y) do
