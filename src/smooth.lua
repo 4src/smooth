@@ -16,7 +16,6 @@ OPTIONS:
   -s --seed     random seed                     = 1234567891
   -q --quiet    hide print output               = false]]
 
-
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW, DATA    = l.obj"ROW", l.obj"DATA"
 
