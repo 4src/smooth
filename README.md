@@ -1,4 +1,4 @@
-![](https://img.shields.io/badge/tests-failing-red)
+![](https://img.shields.io/badge/tests-passing-green)
 ![](https://img.shields.io/badge/Lua-2C2D72?logo=lua&logoColor=white&style=plastic)
 ![](https://img.shields.io/badge/purpose-xai,_optimization-blue)
 ![](https://img.shields.io/badge/platform-mac,_linux-orange)

@@ -1,47 +1,53 @@
 # shorter tutorial on make https://alextan.medium.com/makefile-101-56ba4590025b
 # longer notes tut https://swcarpentry.github.io/make-novice/index.html
+# https://hoelz.ro/ref/makefile-tips-and-tricks
+# an alternative to make: https://github.com/casey/just
 
-SHELL = /bin/bash
-MAKEFLAGS += --silent
-.PHONY: help do ready saved tested install-codespaces install-mac
-root=$(shell git rev-parse --show-toplevel)
+ifndef LOUD # disable with make LOUD=1
+.SILENT: 
+endif
+
+WANT = lua gawk  
+OK := $(foreach x,$(WANT),\
+         $(if $(shell which $(x)),"",$(error no $(x) in PATH)))
+
+SHELL     := bash 
+MAKEFLAGS += --warn-undefined-variables
+smooth=$(shell git rev-parse --show-toplevel)
+.PHONY: help run ready saved tested install-codespaces install-mac
 #------------------------------------------------------------------------------
-C1 = '\033[34m'# blue
-C2 = '\033[32m'# green
-C0 = '\033[0m'#  reset
-
-help:  ##               show help
-	echo ""; echo -e $(C1)"ACTIONS:"$(C0)
-	gawk '/^[a-z].*:/ && /##/ { \
-	          a=$$1; sub(/^.*##/,""); print "   '$(C2)'"a"'$(C0)'  " $$0 } \
-		  ' $(MAKEFILE_LIST) 
+help:  ## show help
+	gawk 'BEGIN {FS = ":.*?## "}                                               \
+	     /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m : %s\n", $$1, $$2} \
+		 ' $(MAKEFILE_LIST)
+	
 #------------------------------------------------------------------------------
 it ?= all
-run:    ##                it=eg run
+run: ## it=eg run
 	lua eg.lua $(it) 
 #------------------------------------------------------------------------------
-ready: ##              pull
+ready: ## pull
 	git pull
 
-saved: ##              commit
+saved: ## commit
 	git commit -am saving; git push; git status
 #------------------------------------------------------------------------------
 ../docs/%.md: ../src/%.lua ## file.md  insert snips from code into markdown
-	gawk -f $(root)etc/snips.awk PASS=1 $< PASS=2 $< > _tmp
+	gawk -f $(smooth)/etc/snips.awk PASS=1 $< PASS=2 $< > _tmp
 	mv _tmp $@
 #------------------------------------------------------------------------------
 n="![](https://img.shields.io/badge/tests-failing-red)"
 y="![](https://img.shields.io/badge/tests-passing-green)"
 
-tested: ##             run tests, update README badge
-	if   cd ../src/; lua eg.lua all 1>&2;        \
-	then gawk --source 'NR==1 {print $y; next} 1' $(root)/README.md;  \
-	else gawk --source 'NR==1 {print $n; next} 1' $(root)/README.md; fi > _tmp
-	mv _tmp $(root)/README.md 
+tested: ## run tests, update README badge
+	cd $(smooth)/src ;                                                \
+	if lua eg.lua all; then echo $y > _tmp ; else echo $n > _tmp; fi; \
+	sed 1d $(smooth)/README.md >> _tmp;                                  \
+ 	mv _tmp $(smooth)/README.md 
 #------------------------------------------------------------------------------
-install-codespaces: ## install packages on codespaces
+install-codespaces: ## install deppendancies on codespaces
 	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x; done
 
-install-mac: ##        install packages on mac
+install-mac: ## install deppendancies on mac
 	printf "\nWARNING: can crash inside vscode; maybe run in standard terminal?\n\n"
 	for x in gawk lua@5.3 ispell; do (which $$x) > /dev/null || brew install $$x; done
