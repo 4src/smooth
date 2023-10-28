@@ -48,9 +48,8 @@ function eg.cols(     c)
 function eg.data(     d)
   d = DATA(the.file)
   for _,col in pairs(d.cols.all) 
-    do print(col:mid(), col:div()) end  
-  print(o(d.cols.x[1]:stats())) end
---  print(o(d:stats())) end
+     do print(o{txt=col.txt,mid=col:mid(), div=col:div()}) end
+  print(o(d:stats())) end
 
 function eg.sym(s)
   s = SYM()

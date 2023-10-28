@@ -19,6 +19,7 @@ OPTIONS:
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW, DATA    = l.obj"ROW", l.obj"DATA"
 
+local o,push = l.o,l.push
 -- SYM, NUM ----------------------------------------------------
 function SYM:new(at,s) 
     return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0} end
@@ -62,7 +63,7 @@ function COLS:new(t,       _,what,where)
   self.all, self.x, self.y,_ = {},{},{},{}
   for at,s in pairs(t) do
     what  = s:find"^[A-Z]" and NUM or SYM
-    where = s:find"X$" and _ or (s:find"^[+-!]$" and self.x or self.y)
+    where = s:find"X$" and _ or (s:find"[!+-]$" and self.y or self.x)
     l.push(where, l.push(self.all, what(at,s)))end end
 
 function COLS:xs(t) self:adds(self.x, t); return self end
@@ -94,6 +95,7 @@ function DATA:new(src)
 function DATA:add(row)
   if   self.cols
   then self.cols:xs(row):ys(row)
+       push(self.rows, row)
   else self.cols = COLS(row.cells) end end
 
 function DATA:stats(  fun,cols,digits,     t,get)
