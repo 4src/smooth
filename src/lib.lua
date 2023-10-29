@@ -45,44 +45,18 @@ function l.slice(t, nGo, nStop, nInc,       u)
     u[1+#u]=t[i] end
   return u end
 
-function l.showm(t)
-   u={""}
-   for j,cell in pairs(t[2]) do w[j+1] = math.max(w[j+1] or 0, #tostring(cell)) end
-   for i=2,#t,2 do
-
-
-
-function l.showm(t,n,ys,xs)
-  function w(x) return l.fmt("%-"..n.."s", x) end
-  function ws(t,keyp) 
-    u={}; for k,v in pairs(t) do l.push(u, w(keyp and k or v)) end 
-  lines={}
-  for j,y in pairs(ys) do
-    if 
-
-  top,lines=true,{}
-  for what,t1 in pairs(t) do
-    line =l.push(lines,{})
-    if top then
-      top=false
-      l.push(line,"");for k,_ in l.items(t1) do l.push(line, k) end
-      line = l.push(lines,{})
-    end
-    l.push(line,what);for _,v in l.items(t1) do l.push(line,v) end end 
-  return l.printm(lines) end
-
-function l.printm(t,     hi,u)
-  hi={}
-  for i,cells in pairs(t) do 
-    for j,cell in pairs(cells) do
-      print(i,j,cell)
-      hi[j] = math.max(hi[j] or 0, #tostring(cell)) 
-      --print(j,hi[j])
-      end end
-  for i,n in pairs(hi) do hi[i] = "%-"..n.."s%" end
-  for i,cells in pairs(t) do
-    u={}; for j,cell in pairs(cells) do  print(hi[i]); cells[j] = l.fmt(hi[j],cell) end
-    print(table.concat(u," ")) end end
+function l.report(t,n,      f,u,s)
+  n = n or 10
+  s = ("-"):rep(n)
+  f = function(x) return l.fmt("%-"..n.."s",x) end
+  for what,cells in l.items(t) do
+    if not u then
+      u={f("")}; for k,v in l.items(cells) do u[1+#u]=f(k) end
+      print(table.concat(u,"| ")) 
+      io.write(s)
+      for _,__ in l.items(cells) do io.write(s); end; print"" end
+    u={f(what)}; for k,v in l.items(cells) do u[1+#u]=f(v) end
+    print(table.concat(u,"| ")) end end
 
 -- maths -------------------------------------------------------
 function l.rnd(x,  d)

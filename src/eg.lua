@@ -77,27 +77,13 @@ function eg.heaven(     d)
   for _,row in pairs(d.rows) do
     print(l.rnd(row:d2h(d)), o(row.cells)) end end
 
-function eg.report()
-   l.showm({aa= {name=23,age=5,shoesize=23},
-            kk={name=40,age=50,shoesize=123},
-            nn={name=100,age=50,shoesize=12121211232123}},
-            20, {"aa","kk","mn"},
-                ("name","age","shoesize")}
-
-          
-  
-  
-
-
-
-
 function eg.heavens(      d,rows)
   d = DATA(the.file)
   rows = d:sorted()
   print""
-  l.tprint{{base  = d:stats()},
-           {first = d:clone( l.slice(rows,1,20) ):stats()},
-           {last  = d:clone( l.slice(rows,-20)  ):stats()}} end
+  l.report{base  = d:stats(),
+           first = d:clone( l.slice(rows,1,20) ):stats(),
+           last  = d:clone( l.slice(rows,-20)  ):stats()} end
 
 
 -- function eg.dist(     t,r1,r2,d)
