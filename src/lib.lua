@@ -47,16 +47,16 @@ function l.slice(t, nGo, nStop, nInc,       u)
 
 function l.report(t,n,      f,u,s)
   n = n or 10
-  s = "-":rep(n)
+  s = ("-"):rep(n)
   f = function(x) return l.fmt("%-"..n.."s",x) end
   for what,cells in l.items(t) do
     if not u then
       u={f("")}; for k,v in l.items(cells) do u[1+#u]=f(k) end
-      print(table.concat(u,"| ")) 
+      print(table.concat(u,"")) 
       io.write(s)
       for _,__ in l.items(cells) do io.write(s); end; print"" end
     u={f(what)}; for k,v in l.items(cells) do u[1+#u]=f(v) end
-    print(table.concat(u,"| ")) end end
+    print(table.concat(u,"")) end end
 
 -- maths -------------------------------------------------------
 function l.rnd(x,  d)
