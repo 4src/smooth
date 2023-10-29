@@ -37,21 +37,6 @@ function eg.all(     oops)
 function eg.fails() return false end
 function eg.the()   print(l.o(the)) end
 
-function eg.csv(      n)
-  n=0; for t in l.csv(the.file) do n = n + #t end 
-  return n ==399*8 end  
-
-function eg.cols(     c)
-  c=COLS{"Name","Age","employed","Happy+"}
-  for _,col in pairs(c.all) do print(col:div(), col) end end
-
-
-function eg.data(     d)
-  d = DATA(the.file)
-  for _,col in pairs(d.cols.all) 
-     do print(o{txt=col.txt,mid=col:mid(), div=col:div()}) end
-  print(o(d:stats())) end
-
 function eg.sym(s)
   s = SYM()
   for _,x in pairs{1,1,1,1,2,2,3} do s:add(x) end
@@ -65,21 +50,55 @@ function eg.num(     n,md,sd)
   print(md,sd)
   return 50 < md and md < 51 and 29 < sd and sd < 30 end
 
--- function eg.stats(     d)
---   d = DATA(the.file)
---   print("mid",o(d:stats())) 
---   print("div",o(d:stats(d,"div",d.cols.y))) end
+function eg.csv(      n)
+  n=0; for t in l.csv(the.file) do
+    if n>0 then assert(type(t[1])=="number") end
+    n = n + #t end
+  return n ==399*8 end
 
--- function eg.clone(      d1,d2,s1,s2,good)
---   d1  = DATA(the.file)
---   d2  = d1.clone(d1.rows)
---   s1  = d1:stats()
---   s2  = d2:stats()
---   good= true
---   for k,v in pairs(s1) do good = good and v == s2[k] end 
---   print("original", o(s1))
---   print("cloned  ", o(s2)) 
---   return good end
+function eg.cols(     c)
+  print""
+  c=COLS{"Name","Age","employed","Happy+"}
+  for _,col in pairs(c.all) do print(col:div(), col) end end
+
+function eg.data(     d)
+  d = DATA(the.file)
+  for _,col in pairs(d.cols.all) 
+     do print(o{txt=col.txt,mid=col:mid(), div=col:div()}) end
+  print(o(d:stats(10))) end
+
+function eg.clone(     d)
+  d = DATA(the.file)
+  print("\n"..o(d:stats()))
+  print(o(d:clone(d.rows):stats())) end
+
+function eg.heaven(     d)
+  d = DATA(the.file)
+  for _,row in pairs(d.rows) do
+    print(l.rnd(row:d2h(d)), o(row.cells)) end end
+
+function eg.report()
+   l.showm({aa= {name=23,age=5,shoesize=23},
+            kk={name=40,age=50,shoesize=123},
+            nn={name=100,age=50,shoesize=12121211232123}},
+            20, {"aa","kk","mn"},
+                ("name","age","shoesize")}
+
+          
+  
+  
+
+
+
+
+function eg.heavens(      d,rows)
+  d = DATA(the.file)
+  rows = d:sorted()
+  print""
+  l.tprint{{base  = d:stats()},
+           {first = d:clone( l.slice(rows,1,20) ):stats()},
+           {last  = d:clone( l.slice(rows,-20)  ):stats()}} end
+
 
 -- function eg.dist(     t,r1,r2,d)
 --   t,d = {}, DATA(the.file); 
@@ -87,19 +106,5 @@ function eg.num(     n,md,sd)
 --     r1,r2 = l.any(d.rows),  l.any(d.rows) 
 --     push(t, o(d:dist(r1, r2),2)) end 
 --   print(o(l.sort(t),2)) end
-
--- function eg.heaven(     t,r1,r2,d)
---   t, d = {}, DATA(the.file); 
---   for i=1,20 do 
---     r1  = l.any(d.rows)
---     push(t, d:d2h(r1)) end
---   print(o(t,2)) end
-
--- function eg.heavens(     t,d,n)
---   t, d = {}, DATA(the.file)
---   n = (#d.rows) ^.5  
---   t = l.keysort(d.rows, function(row1,x) return d:d2h(row1) end) 
---   print("best", o(d:clone(l.slice(t,1,n)):stats()))
---   print("worst", o(d:clone(l.slice(t,-n)):stats())) end
 ----------------------------------------------------------------
 run()

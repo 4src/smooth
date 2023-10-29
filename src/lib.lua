@@ -30,6 +30,60 @@ function l.items(t,    n,i,u)
   return function()
     if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
+function l.keysort(t,fun)
+  local decorated, undecorated = {},{}
+  for _,v in pairs(t) do l.push(decorated, {x=v, y=fun(v)}) end
+  table.sort(decorated, function(a,b) return a.y < b.y end) 
+  for _,v in pairs(decorated) do l.push(undecorated, v.x) end
+  return undecorated end
+
+function l.slice(t, nGo, nStop, nInc,       u)
+  if nGo   and nGo   < 0 then nGo  = #t + nGo +1 end
+  if nStop and nStop < 0 then nStop= #t + nStop  end
+  u={}
+  for i=(nGo or 1)//1,(nStop or #t)//1,(nInc or 1)//1 do 
+    u[1+#u]=t[i] end
+  return u end
+
+function l.showm(t)
+   u={""}
+   for j,cell in pairs(t[2]) do w[j+1] = math.max(w[j+1] or 0, #tostring(cell)) end
+   for i=2,#t,2 do
+
+
+
+function l.showm(t,n,ys,xs)
+  function w(x) return l.fmt("%-"..n.."s", x) end
+  function ws(t,keyp) 
+    u={}; for k,v in pairs(t) do l.push(u, w(keyp and k or v)) end 
+  lines={}
+  for j,y in pairs(ys) do
+    if 
+
+  top,lines=true,{}
+  for what,t1 in pairs(t) do
+    line =l.push(lines,{})
+    if top then
+      top=false
+      l.push(line,"");for k,_ in l.items(t1) do l.push(line, k) end
+      line = l.push(lines,{})
+    end
+    l.push(line,what);for _,v in l.items(t1) do l.push(line,v) end end 
+  return l.printm(lines) end
+
+function l.printm(t,     hi,u)
+  hi={}
+  for i,cells in pairs(t) do 
+    for j,cell in pairs(cells) do
+      print(i,j,cell)
+      hi[j] = math.max(hi[j] or 0, #tostring(cell)) 
+      --print(j,hi[j])
+      end end
+  for i,n in pairs(hi) do hi[i] = "%-"..n.."s%" end
+  for i,cells in pairs(t) do
+    u={}; for j,cell in pairs(cells) do  print(hi[i]); cells[j] = l.fmt(hi[j],cell) end
+    print(table.concat(u," ")) end end
+
 -- maths -------------------------------------------------------
 function l.rnd(x,  d)
   if math.floor(x) == x then return x
