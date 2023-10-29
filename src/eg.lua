@@ -5,6 +5,7 @@ local o,push        = l.o, l.push
 local the           = smo.the
 local SYM,NUM,COLS  = smo.SYM,  smo.NUM, smo.COLS
 local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
+local ABCD          = smo.ABCD
 
 local eg = {}
 local _print = print
@@ -85,6 +86,21 @@ function eg.heavens(      d,rows)
            first = d:clone( l.slice(rows,1,20) ):stats(),
            last  = d:clone( l.slice(rows,-20)  ):stats()} end
 
+function eg.abcd()
+  x=nil
+  for _ = 1,6 do x=ABCD.adds(x,"yes","yes") end
+  for _ = 1,2 do x= ABCD.adds(x,"no","no") end
+  for _ = 1,5 do ABCD.adds(x,"maybe", "maybe") end
+  x=ABCD.adds(x,"maybe","no")
+  l.report(ABCD.report(x)) end
+
+          --
+          -- === Detailed Accuracy By Class ===
+          --                TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+          --                  1         0          1         1         1          1        yes
+          --                  1         0.083      0.667     1         0.8        0.938    no
+          --                  0.833     0          1         0.833     0.909      0.875    maybe
+          -- Weighted Avg.    0.929     0.012      0.952     0.929     0.932      0.938
 
 -- function eg.dist(     t,r1,r2,d)
 --   t,d = {}, DATA(the.file); 
