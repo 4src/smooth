@@ -47,7 +47,7 @@ function l.slice(t, nGo, nStop, nInc,       u)
 
 function l.report(t,n,      f,u,s)
   n = n or 10
-  s = ("-"):rep(n)
+  s = "-":rep(n)
   f = function(x) return l.fmt("%-"..n.."s",x) end
   for what,cells in l.items(t) do
     if not u then
