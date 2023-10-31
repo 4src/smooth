@@ -7,8 +7,8 @@ ifndef LOUD # disable with make LOUD=1
 .SILENT: 
 endif
 
-WANT = lua gawk
-OK := $(foreach x,$(WANT),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
+NEED = lua gawk
+OK := $(foreach x,$(NEED),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
 
 SHELL     := bash 
 MAKEFLAGS += --warn-undefined-variables
