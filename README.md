@@ -3,6 +3,8 @@
 ![](https://img.shields.io/badge/purpose-xai,_optimization-blue)
 ![](https://img.shields.io/badge/platform-mac,_linux-orange)
 [![](https://img.shields.io/badge/license-BSD2-yellow)](LICENSE.md)
+          
+[home](/README.md) :: [automate](/docs/automated.md)
 
 <img align=right width=400 src="etc/img/smo.png">
 
