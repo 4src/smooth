@@ -1,12 +1,12 @@
 local l={}
--- lint --------------------------------------------------------
+--- lint ------------------------------------------------------
 local b4={}; for k,v in pairs(_ENV) do b4[k]=k end
 
 function l.rogues()
   for k,v in pairs(_ENV) do 
     if not b4[k] then print("#W ?",k,type(v)) end end end
 
--- objects -----------------------------------------------------
+--- objects -----------------------------------------------------
 local id=0
 function l.obj(s,    t)
   t = {}
@@ -20,9 +20,11 @@ function l.obj(s,    t)
 -- lists -------------------------------------------------------
 function l.push(t,x) t[1+#t]=x ; return x end
 
+--- fisheryates
 function l.shuffle(t,   j)
   for i=#t,2,-1 do j=math.random(i); t[i],t[j]=t[j],t[i] end; return t end
 
+--- sortedItems
 function l.items(t,    n,i,u)
   u={}; for k,_ in pairs(t) do u[1+#u] = k; end
   table.sort(u)
@@ -30,12 +32,18 @@ function l.items(t,    n,i,u)
   return function()
     if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
+--- sortonkeys
+function lt(x) return function(a,b) return a[x] < b[x] end
+function gt(x) return function(a,b) return a[x] < b[x] end
+
+--- schwartzianTransform
 function l.keysort(t,fun)
   local decorated, undecorated = {},{}
   for _,v in pairs(t) do l.push(decorated, {x=v, y=fun(v)}) end
   table.sort(decorated, function(a,b) return a.y < b.y end) 
   for _,v in pairs(decorated) do l.push(undecorated, v.x) end
   return undecorated end
+
 
 function l.slice(t, nGo, nStop, nInc,       u)
   if nGo   and nGo   < 0 then nGo  = #t + nGo +1 end
