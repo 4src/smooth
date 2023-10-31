@@ -22,6 +22,7 @@ local ABCD,NB      = l.obj"ABCD", l.obj"NB"
 
 local o,push = l.o,l.push
 -- SYM, NUM ----------------------------------------------------
+--- colnew
 function SYM:new(at,s) 
     return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0} end
 
@@ -30,6 +31,7 @@ function NUM:new(at,s)
           lo=1E30, hi= -1E30,
           heaven = (s or ""):find"-$" and 0 or 1} end
 
+--- coladd
 function NUM:add(x,     d)
   if x~="?" then
     self.n = self.n + 1
@@ -47,19 +49,22 @@ function SYM:add(x,     tmp)
     self.has[x] = tmp
     if tmp > self.most then self.most,self.mode = tmp,x end end end
 
+--- colquery
 function NUM:mid() return self.mu end
 function SYM:mid() return self.mode end
 
 function NUM:div() return self.sd end
 function SYM:div() return l.ent(self.has) end
 
-function NUM:bin(x) return (x-self.mu)/self:div()/(6/the.bins)// 1 end
-function SYM:bin(x) return x end
-
+--- colchop
 function NUM:norm(x) 
   return x=="?" and x or (x - self.lo)/ (self.hi - self.lo + 1e-30) end
 
+function NUM:bin(x) return (.5+(x-self.mu)/self:div()/(6/the.bins))// 1 end
+  function SYM:bin(x) return x end
+
 -- COLS ---------------------------------------------------------
+--- colsmake
 function COLS:new(t,       col)
   self.all, self.x, self.y = {},{},{}
   self.names, self.klass   = t, nil
@@ -69,6 +74,7 @@ function COLS:new(t,       col)
       (s:find"[!+-]$" and self.y or self.x)[at] = col
       if s:find"!$" then self.klass = col end end end end
 
+--- colsadd
 function COLS:xs(t) self:adds(self.x, t); return self end
 function COLS:ys(t) self:adds(self.y, t); return self end
 
