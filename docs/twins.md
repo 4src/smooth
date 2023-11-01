@@ -30,6 +30,10 @@ NB + Clustering:
 
 ## optimzation = cluster + chop
 
+clustering over two spaces 
+
+![](/etc/img/spaces.png)
+
 ## anomaly detection = cluster + outlier
 
 ## Naive Bayes = outlier
