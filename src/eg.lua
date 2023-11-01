@@ -94,23 +94,5 @@ function eg.abcd(     x)
   print""
   l.report(ABCD.report(x),6) end
 
-          -- === Detailed Accuracy By Class ===
-          --                TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
-          --                  1         0          1         1         1          1        yes
-          --                  1         0.083      0.667     1         0.8        0.938    no
-          --                  0.833     0          1         0.833     0.909      0.875    maybe
-          -- Weighted Avg.    0.929     0.012      0.952     0.929     0.932      0.938
-
-          -- === Confusion Matrix ===
-          -- #  a b c   <-- classified as
-          -- #  6 0 0 | a = yes
-          -- #  0 2 0 | b = no
-          -- #  0 1 5 | c = maybe
--- function eg.dist(     t,r1,r2,d)
---   t,d = {}, DATA(the.file); 
---   for i=1,20 do 
---     r1,r2 = l.any(d.rows),  l.any(d.rows) 
---     push(t, o(d:dist(r1, r2),2)) end 
---   print(o(l.sort(t),2)) end
 ----------------------------------------------------------------
 run()

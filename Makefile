@@ -35,7 +35,7 @@ BODY='BEGIN {RS=""; FS="\n"} NR==1 { next } { print($$0 "\n")  }'
 HEAD='BEGIN {RS=""; FS="\n"} NR==1 { print($$0 "\n"); exit }'
 
 %.md: ## file.md  insert snips from code into markdown
-	echo 1
+	echo "# filling in $@ ..."
 	gawk --source $(HEAD) $(smooth)/README.md >  _in
 	gawk --source $(BODY) $@                  >> _in
 	awk -f $(smooth)/etc/snips.awk PASS=1 $(smooth)/src/*.lua  PASS=2 _in > _out

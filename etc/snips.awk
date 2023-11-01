@@ -10,6 +10,6 @@ PASS==2 && /```lua/   { k=$2" "$3
                         print(trim(SNIP[k])"\n```")
                         USED[k]++
                         while(getline x >0) if (x ~ /^```/) break }
-END { for(k in SNIP)
-        if (USED[k] != 1) {
-          print("?? used " (USED[k]+0)" time(s) "k) > "/dev/stderr" } }
+# END { for(k in SNIP)
+#         if (USED[k] != 1) {
+#           print("?? used " (USED[k]+0)" time(s) "k) > "/dev/stderr" } }
