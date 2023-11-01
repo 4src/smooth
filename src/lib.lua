@@ -33,8 +33,8 @@ function l.items(t,    n,i,u)
     if i < #u then i=i+1; return u[i], t[u[i]] end end end 
 
 --- sortonkeys
-function lt(x) return function(a,b) return a[x] < b[x] end
-function gt(x) return function(a,b) return a[x] < b[x] end
+function l.lt(x) return function(a,b) return a[x] < b[x] end end
+function l.gt(x) return function(a,b) return a[x] > b[x] end end
 
 --- schwartzianTransform
 function l.keysort(t,fun)
@@ -44,7 +44,6 @@ function l.keysort(t,fun)
   for _,v in pairs(decorated) do l.push(undecorated, v.x) end
   return undecorated end
 
-
 function l.slice(t, nGo, nStop, nInc,       u)
   if nGo   and nGo   < 0 then nGo  = #t + nGo +1 end
   if nStop and nStop < 0 then nStop= #t + nStop  end
@@ -53,18 +52,20 @@ function l.slice(t, nGo, nStop, nInc,       u)
     u[1+#u]=t[i] end
   return u end
 
-function l.report(t,n,      f,u,s)
-  n = n or 10
-  f = function(x) return l.fmt("%-"..n.."s",x) end
+function l.report(t, n,      f,u,s)
+  n = n or 10 
+  f = function(x) return l.fmt("%-"..n.."s",l.rnd(x,2)) end
   for what,cells in l.items(t) do
     if not u then
       u={f("")}; for k,v in l.items(cells) do u[1+#u]=f(k) end
-      print(table.concat(u)) end
-    u={f(what)}; for k,v in l.items(cells) do u[1+#u]=f(v) end
+      print(l.o(table.concat(u))) end
+    u = {f(what)}; for _,v in l.items(cells) do u[1+#u] = f(v)  end
     print(table.concat(u)) end end
+   
 
 -- maths -------------------------------------------------------
 function l.rnd(x,  d)
+  if type(x) ~= "number" then return x end
   if math.floor(x) == x then return x
   else local mult = 10^(d or 2)
        return math.floor(x*mult+0.5)/mult end end

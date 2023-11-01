@@ -86,15 +86,14 @@ function eg.heavens(      d,rows)
            first = d:clone( l.slice(rows,1,20) ):stats(),
            last  = d:clone( l.slice(rows,-20)  ):stats()} end
 
-function eg.abcd()
-  x=nil
-  for _ = 1,6 do x=ABCD.adds(x,"yes","yes") end
-  for _ = 1,2 do x= ABCD.adds(x,"no","no") end
-  for _ = 1,5 do ABCD.adds(x,"maybe", "maybe") end
-  x=ABCD.adds(x,"maybe","no")
-  l.report(ABCD.report(x)) end
+function eg.abcd(     x)
+  for _ = 1,6 do x= ABCD.adds(x,"yes",   "yes") end
+  for _ = 1,2 do x= ABCD.adds(x,"no",    "no") end
+  for _ = 1,5 do x= ABCD.adds(x,"maybe", "maybe") end
+  x= ABCD.adds(x,"maybe","no")
+  print""
+  l.report(ABCD.report(x),6) end
 
-          --
           -- === Detailed Accuracy By Class ===
           --                TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
           --                  1         0          1         1         1          1        yes
@@ -102,6 +101,11 @@ function eg.abcd()
           --                  0.833     0          1         0.833     0.909      0.875    maybe
           -- Weighted Avg.    0.929     0.012      0.952     0.929     0.932      0.938
 
+          -- === Confusion Matrix ===
+          -- #  a b c   <-- classified as
+          -- #  6 0 0 | a = yes
+          -- #  0 2 0 | b = no
+          -- #  0 1 5 | c = maybe
 -- function eg.dist(     t,r1,r2,d)
 --   t,d = {}, DATA(the.file); 
 --   for i=1,20 do 
