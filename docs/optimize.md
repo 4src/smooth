@@ -8,7 +8,7 @@
 
 # Optimization
 
-Life is walking around, guessing how you might improve things.
+Life is walking around, guessing how makyou might improve things.
 
 Think of an ant walking around a landscape of possibilties:
 
