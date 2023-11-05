@@ -16,8 +16,8 @@ smooth=$(shell git rev-parse --show-toplevel)
 .PHONY: help run ready saved tested install-codespaces install-mac
 #------------------------------------------------------------------------------
 help:  ## show help
-	gawk 'BEGIN {FS = ":.*?## "; print "make" }                                              \
-	     /^[a-zA-Z_-]+:.*?## / {printf "\t\033[36m%-20s\033[0m : %s\n", $$1, $$2} \
+	gawk 'BEGIN {FS = ":.*?## "; print "\nmake" }                                              \
+	     /^[a-zA-Z_-]+:.*?## / {printf  "\t\033[36m%-20s\033[0m : %s\n", $$1, $$2} \
 		 ' $(MAKEFILE_LIST)
 	
 #------------------------------------------------------------------------------
