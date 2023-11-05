@@ -61,7 +61,6 @@ function l.report(t, n,      f,u,s)
       print(l.o(table.concat(u))) end
     u = {f(what)}; for _,v in l.items(cells) do u[1+#u] = f(v)  end
     print(table.concat(u)) end end
-   
 
 -- maths -------------------------------------------------------
 function l.rnd(x,  d)
@@ -84,7 +83,7 @@ function l.o(t,d,     u)
   if type(t) == "number"   then return l.fmt("%s",l.rnd(t,d)) end
   if type(t) ~= "table"    then return l.fmt("%s",t) end
   u = {}
-  if   #t > 0
+  if #t > 0
   then for _,v in   pairs(t) do u[1+#u]=l.fmt("%s",      l.o(v,d)) end
   else for k,v in l.items(t) do u[1+#u]=l.fmt(":%s %s",k,l.o(v,d)) end end
   return "{"..table.concat(u," ").."}" end

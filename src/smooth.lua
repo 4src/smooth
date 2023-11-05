@@ -1,6 +1,7 @@
 -- vim: set et sts=2 sw=2 ts=2 :  
 local l = require"lib"
 local the,help = l.settings[[
+  
 SMOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
@@ -11,6 +12,7 @@ USAGE:
 OPTIONS:
   -b --bins     number of bins                  = 6
   -f --file     file name                       = ../../data/auto93.csv
+  -h --help     show help                       = false
   -k --k        low frequency hack for classes  = 1 
   -m --m        low frequency hack for E        = 2
   -s --seed     random seed                     = 1234567891
