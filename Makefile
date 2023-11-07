@@ -16,8 +16,8 @@ smooth=$(shell git rev-parse --show-toplevel)
 .PHONY: help run ready saved tested install-codespaces install-mac
 #------------------------------------------------------------------------------
 help:  ## show help
-	gawk 'BEGIN {FS = ":.*?## "; print "\nmake" }                                              \
-	     /^[a-zA-Z_-]+:.*?## / {printf  "\t\033[36m%-20s\033[0m : %s\n", $$1, $$2} \
+	gawk 'BEGIN {FS = ":.*?## "; print "\nmake [WHAT]" } \
+	     /^[a-zA-Z_-]+:.*?## / {printf "   \033[36m%-20s\033[0m : %s\n", $$1, $$2} \
 		 ' $(MAKEFILE_LIST)
 	
 #------------------------------------------------------------------------------
@@ -46,10 +46,11 @@ n="![](https://img.shields.io/badge/tests-failing-red)"
 y="![](https://img.shields.io/badge/tests-passing-green)"
 
 tested: ## run tests, update README badge
-	cd $(smooth)/src ;                                                \
-	if lua eg.lua all; then echo $y > _tmp ; else echo $n > _tmp; fi; \
-	sed 1d $(smooth)/README.md >> _tmp;                                  \
+	cd $(smooth)/src ; \
+	if lua eg.lua all; then echo 0; echo $y > _tmp ; else echo 1; echo $n > _tmp; fi; \
+	sed 1d $(smooth)/README.md >> _tmp; \
  	mv _tmp $(smooth)/README.md 
+
 #------------------------------------------------------------------------------
 install-codespaces: ## install deppendancies on codespaces
 	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x; done

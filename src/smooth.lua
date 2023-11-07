@@ -1,7 +1,7 @@
 -- vim: set et sts=2 sw=2 ts=2 :  
 local l = require"lib"
 local the,help = l.settings[[
-  
+
 SMOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
@@ -115,11 +115,27 @@ function ROW:like(data,  n,h)
       out = out + math.log(inc) end end
   return out end
 
+-- NB ----------------------------------------------------------
+function NB:new(src,wait)
+  self.all, self.klasses = nil, {} 
+  if type(src) == "string"
+  then for     t in l.csv(src)        do self:add(t) end
+  else for _,row in pairs(src or {}) do self:add(row) end end 
+
+function NB:add(row,      k)
+  row = row.cells and row or ROW(row)
+  if   self.all
+  then k = row.cells[self.all.cols.klass.at]
+       klass[k] = klass[k] or self.all:clone()
+       klass[k]:add(row)
+       self.all:add(row)
+  else self.all = DATA(row) end end
+
 -- DATA --------------------------------------------------------
 function DATA:new(src)
   self.rows, self.cols = {}, nil
-  if   type(src) == "string"
-  then for     t in l.csv(src)       do self:add(ROW(t)) end
+  if type(src) == "string"
+  then for     t in l.csv(src)       do self:add(t) end
   else for _,row in pairs(src or {}) do self:add(row) end end end
 
 function DATA:clone(rows,      clone)
@@ -128,6 +144,7 @@ function DATA:clone(rows,      clone)
   return clone end
 
 function DATA:add(row)
+  row = row.cells and row or ROW(row)
   if   self.cols
   then self.cols:xs(row):ys(row)
        push(self.rows, row)
@@ -142,37 +159,7 @@ function DATA:stats(  digits,fun,cols,     t,get)
 function DATA:sorted()
   return l.keysort(self.rows, function(row) return row:d2h(self) end) end
 -------------------------------------------------
-function ABCD:new(klass, b4)
-  return {klass=klass, a=b4 or 0, b=0, c=0, d=0} end
 
-function ABCD:add(want,got)
-  if   want == self.klass
-  then if want==got       then self.d=self.d+1 else self.b=self.b+1 end
-  else if got==self.klass then self.c=self.c+1 else self.a=self.a+1 end end end
-
-function ABCD:f(    p,r)  p,r=self:precision(),self:recall(); return (2*p*r)/(p+r) end
-function ABCD:g(    nf,r) nf,r=1-self:pf(),self:recall(); return (2*nf*r)/(nf+r) end
-function ABCD:pf()        return self.c/(self.a+self.c+1E-30) end
-function ABCD:recall()    return self.d/(self.b+self.d+1E-30) end
-function ABCD:accuracy()  return (self.a+self.d)/(self.a+self.b+self.c+self.d+1E-30) end
-function ABCD:precision() return self.d/(self.c+self.d+1E-30) end
-
-function ABCD:stats()
-  return { _n=self.a+self.b+self.c+self.d,
-           _a=self.a, _b=self.b, _c=self.c,  _d=self.d,
-           acc=self:accuracy(), prec=self:precision(), pd=self:recall(), pf=self:pf(),
-           f=self:f(),
-           g=self:g()} end
-
-function ABCD.adds(t,want,got)
-  t = t or {all={},n=0}
-  t.all[want] = t.all[want] or ABCD(want, t.n)
-  t.n = t.n + 1
-  for _,abcd in pairs(t.all) do abcd:add(want,got) end
-  return t end
-
-function ABCD.report(t,     u)
-  u={}; for k,abcd in pairs(t.all) do u[k] = abcd:stats() end; return u end
 
 -- function NB:new(src)
 --   self.all, self.scores, self.klasses = nil,{},{}
