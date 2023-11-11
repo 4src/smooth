@@ -7,6 +7,8 @@ function l.rogues()
     if not b4[k] then print("#W ?",k,type(v)) end end end
 
 --- objects -----------------------------------------------------
+l.isa = getmetatable
+
 local id=0
 function l.obj(s,    t)
   t = {}

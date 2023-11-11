@@ -119,11 +119,11 @@ function ROW:like(data,  n,h)
 function NB:new(src,wait)
   self.all, self.klasses = nil, {} 
   if type(src) == "string"
-  then for     t in l.csv(src)        do self:add(t) end
+  then for     t in l.csv(src)       do self:add(t) end
   else for _,row in pairs(src or {}) do self:add(row) end end 
 
 function NB:add(row,      k)
-  row = row.cells and row or ROW(row)
+  row = l.isa(row) == ROW and row or  ROW(row)
   if   self.all
   then k = row.cells[self.all.cols.klass.at]
        klass[k] = klass[k] or self.all:clone()
@@ -144,7 +144,7 @@ function DATA:clone(rows,      clone)
   return clone end
 
 function DATA:add(row)
-  row = row.cells and row or ROW(row)
+  row = l.isa(row) == ROW and row or  ROW(row)
   if   self.cols
   then self.cols:xs(row):ys(row)
        push(self.rows, row)
