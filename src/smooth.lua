@@ -87,6 +87,9 @@ function COLS:adds(xycols, t)
 --- ROW --------------------------------------------------------
 function ROW:new(t) return {cells=t} end
 
+function ROW.mustbe(x)
+  return x.cells and x or ROW(x) end
+
 function ROW:d2h(data,    n,d)
   n,d = 0,0
   for _,col in pairs(data.cols.y) do
@@ -123,7 +126,7 @@ function NB:new(src,wait)
   else for _,row in pairs(src or {}) do self:add(row) end end 
 
 function NB:add(row,      k)
-  row = l.isa(row) == ROW and row or  ROW(row)
+  row = ROW.mustbe(row)
   if   self.all
   then k = row.cells[self.all.cols.klass.at]
        klass[k] = klass[k] or self.all:clone()
@@ -144,7 +147,7 @@ function DATA:clone(rows,      clone)
   return clone end
 
 function DATA:add(row)
-  row = l.isa(row) == ROW and row or  ROW(row)
+  row = ROW.mustbe(row)
   if   self.cols
   then self.cols:xs(row):ys(row)
        push(self.rows, row)
