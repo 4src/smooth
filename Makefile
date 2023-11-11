@@ -8,7 +8,7 @@ ifndef LOUD # disable with make LOUD=1
 endif
 
 NEED = lua gawk
-OK := $(foreach x,$(NEED),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
+#OK := $(foreach x,$(NEED),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
 
 SHELL     := bash 
 MAKEFLAGS += --warn-undefined-variables
@@ -53,6 +53,7 @@ tested: ## run tests, update README badge
 
 #------------------------------------------------------------------------------
 install-codespaces: ## install deppendancies on codespaces
+	sudo apt update
 	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x; done
 
 install-mac: ## install deppendancies on mac
