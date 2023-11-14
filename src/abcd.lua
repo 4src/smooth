@@ -1,3 +1,4 @@
+local ABCD={}
 function ABCD:new(klass, b4)
     return {klass=klass, a=b4 or 0, b=0, c=0, d=0} end
   
