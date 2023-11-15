@@ -2,13 +2,10 @@
 # longer notes tut https://swcarpentry.github.io/make-novice/index.html
 # https://hoelz.ro/ref/makefile-tips-and-tricks
 # an alternative to make: https://github.com/casey/just
-
+sh=bash
 ifndef LOUD # disable with make LOUD=1
 .SILENT: 
 endif
-
-NEED = lua gawk
-#OK := $(foreach x,$(NEED),$(if $(shell which $(x)),"",$(error no $(x) in PATH)))
 
 SHELL     := bash 
 MAKEFLAGS += --warn-undefined-variables
@@ -22,8 +19,8 @@ help:  ## show help
 	
 #------------------------------------------------------------------------------
 it ?= all
-run: ## it=eg run
-	lua eg.lua $(it) 
+run: ok ## it=eg run
+	lua eg.lua -e $(it) 
 #------------------------------------------------------------------------------
 ready: ## pull
 	git pull
@@ -45,13 +42,17 @@ HEAD='BEGIN {RS=""; FS="\n"} NR==1 { print($$0 "\n"); exit }'
 n="![](https://img.shields.io/badge/tests-failing-red)"
 y="![](https://img.shields.io/badge/tests-passing-green)"
 
-tested: ## run tests, update README badge
+tested: ok ## run tests, update README badge
 	cd $(smooth)/src ; \
 	if lua eg.lua all; then echo 0; echo $y > _tmp ; else echo 1; echo $n > _tmp; fi; \
 	sed 1d $(smooth)/README.md >> _tmp; \
  	mv _tmp $(smooth)/README.md 
 
 #------------------------------------------------------------------------------
+NEED = lua gawk
+ok:
+	for x in $(NEED); do  which $$x > /dev/null || echo no $$x in PATH ; done 
+	
 install-codespaces: ## install deppendancies on codespaces
 	sudo apt update
 	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x; done
