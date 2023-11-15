@@ -26,7 +26,7 @@ ready: ## pull
 	git pull
 
 saved: ## commit
-	git commit -am saving; git push; git status
+	read -p "commit msg> " x; git commit -am "$$x"; git push; git status
 #------------------------------------------------------------------------------
 BODY='BEGIN {RS=""; FS="\n"} NR==1 { next } { print($$0 "\n")  }'
 HEAD='BEGIN {RS=""; FS="\n"} NR==1 { print($$0 "\n"); exit }'
