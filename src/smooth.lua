@@ -2,7 +2,7 @@
 local l = require"lib"
 local the,help = l.settings[[
 
-SMOTH : sequential model optimization
+SMOOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
 USAGE: 
@@ -26,7 +26,7 @@ local o,push = l.o,l.push
 -- SYM, NUM ----------------------------------------------------
 --- colnew
 function SYM:new(at,s) 
-    return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0} end
+    return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0}  end
 
 function NUM:new(at,s) 
   return {at=at, txt=s, n=0, mu=0, m2=0, sd=0, 
@@ -51,6 +51,7 @@ function SYM:add(x,     tmp)
     self.has[x] = tmp
     if tmp > self.most then self.most,self.mode = tmp,x end end end
 
+     
 --- colquery
 function NUM:mid() return self.mu end
 function SYM:mid() return self.mode end
@@ -98,8 +99,7 @@ function ROW:d2h(data,    n,d)
   return (d/n)^.5 end
 
 function ROW:classify(datas,    n,h,most,tmp,out)
-  n,h = 0,0
-  most = -1E30
+  n,h,most = 0,0,-1E30
   for _,data in pairs(datas) do h=h+1; n=n+#data.rows end
   for k,data in pairs(datas) do
     tmp = self:like(data,n,h)
