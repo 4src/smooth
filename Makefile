@@ -55,7 +55,7 @@ ok:
 	
 install-codespaces: ## install deppendancies on codespaces
 	sudo apt update
-	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x; done
+	for x in gawk lua5.3 ispell; do (which $$x) > /dev/null || apt-get install $$x -y; done
 
 install-mac: ## install deppendancies on mac
 	printf "\nWARNING: can crash inside vscode; maybe run in standard terminal?\n\n"
