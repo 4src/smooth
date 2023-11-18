@@ -16,7 +16,8 @@ OPTIONS:
   -k --k        low frequency hack for classes  = 1 
   -m --m        low frequency hack for E        = 2
   -s --seed     random seed                     = 1234567891
-  -q --quiet    hide print output               = false]]
+  -q --quiet    hide print output               = false
+  -w --wait     classfy after seeing 'wait' items = 20]]
 
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW,DATA     = l.obj"ROW", l.obj"DATA"
@@ -98,16 +99,14 @@ function ROW:d2h(data,    n,d)
     d = d + (col.heaven - col:norm(self.cells[col.at]))^2 end
   return (d/n)^.5 end
 
-function ROW:classify(datas,    n,h,most,tmp,out)
-  n,h,most = 0,0,-1E30
-  for _,data in pairs(datas) do h=h+1; n=n+#data.rows end
+function ROW:classify(datas,n,h,     most,tmp,out)
+  most = -1E30 
   for k,data in pairs(datas) do
     tmp = self:like(data,n,h)
     if tmp > most then out,most = k,tmp end end
   return out,most end
 
-function ROW:like(data,  n,h)
-  local prior,out,col,b,inc
+function ROW:like(data,n,h,       prior,out,col,b,inc)
   prior = (#data.rows + the.k) / (n + the.k * h)
   out   = math.log(prior)
   for at,v in pairs(self.cells) do
@@ -118,24 +117,35 @@ function ROW:like(data,  n,h)
       out = out + math.log(inc) end end
   return out end
 
+function ROW:klass(data)
+  return self.cells[data.cols.klass.at] end
+
 -- NB ----------------------------------------------------------
 function NB:new(src,wait)
-  self.all, self.klasses = nil, {} 
+  self.datas, self.h, self.all, self.abcd = {}, 0, nil, nil
   if type(src) == "string"
   then for     t in l.csv(src)       do self:add(t) end
   else for _,row in pairs(src or {}) do self:add(row) end end end
 
-function NB:add(row,      k)
+function NB:add(row)
   row = ROW.is(row)
-  if   self.all
-  then self.all:add(row)
-       self:klass():add(row)
-  else self.all = DATA(row) end end
+  if    self.all
+  then  if #self.all.rows > the.wait then self:classify(row) end
+        self.all:add(row)
+        self:klass():add(row) 
+  else  self.all = DATA({row}) end end
+
+function NB:classify(row,     got,want)
+  got  = row:classify(self.datas, #self.all.rows, self.h)
+  want = row:klass(self.all)
+  self.abcd = ABCD.adds(self.abcd,want,got) end
 
 function NB:klass(row,     k)
-  k = row.cells[self.all.cols.klass.at]
-  self.klass[k] = self.klass[k] or self.all:clone()
-  return self.klass[k] end 
+  k = row:klass(self.all)
+  if not self.datas[k] then
+    self.h = self.h + 1
+    self.datas[k] = DATA({row}) end
+  return self.datas[k] end
 
 -- DATA --------------------------------------------------------
 function DATA:new(src)
