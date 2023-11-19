@@ -6,12 +6,12 @@ SMOOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
 USAGE: 
-  smo=require"smooth"
+  smo = require"smooth"
   -- then see the "eg" functions in eg.lua
 
 OPTIONS:
   -b --bins     number of bins                  = 6
-  -f --file     file name                       = ../../data/auto93.csv
+  -f --file     file name                       = ../data/auto93.csv
   -h --help     show help                       = false
   -k --k        low frequency hack for classes  = 1 
   -m --m        low frequency hack for E        = 2

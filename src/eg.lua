@@ -5,7 +5,7 @@ local o,push        = l.o, l.push
 local the           = smo.the
 local SYM,NUM,COLS  = smo.SYM,  smo.NUM, smo.COLS
 local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
-local ABCD          = smo.ABCD
+local ABCD,NB       = smo.ABCD, smo.NB
 
 local eg = {}
 local _print = print
@@ -14,7 +14,7 @@ print = function(...) if not the.quiet then _print(...) end end
 -- start-up code -----------------------------------------------
 local function try(s, fun)
   math.randomseed(the.seed)
-  io.write("▶️ ".. s.." ")
+  io.write("🔷 ".. s.." ")
   if fun()==false 
   then print(" ❌ FAIL"); return true
   else print("✅ PASS"); return false end  end
@@ -63,6 +63,7 @@ function eg.cols(     c)
   for _,col in pairs(c.all) do print(col:div(), col) end end
 
 function eg.data(     d)
+  print(the.file)
   d = DATA(the.file)
   for _,col in pairs(d.cols.all) 
      do print(o{txt=col.txt,mid=col:mid(), div=col:div()}) end
@@ -94,5 +95,7 @@ function eg.abcd(     x)
   print""
   l.report(ABCD.report(x),6) end
 
+function eg.nb(     nb)
+  nb=NB("../data/diabetes.csv") end
 ----------------------------------------------------------------
 run()
