@@ -22,14 +22,14 @@ local function try(s, fun)
 local function run()
   l.cli(the)
   if the.help then print(smo.help) else
-    for _,com in pairs(arg) do 
+    for _,com in pairs(arg) do
       if eg[com] then try(com, eg[com]) end end end
   l.rogues() end
 
 -- eg ----------------------------------------------------------
 function eg.all(     oops)
   oops = -1 -- we have one test that deliberately fails
-  for k,fun in l.items(eg) do
+  for k,fun in l.order(eg) do
     if k~="all" then 
       if try(k,fun) then oops = oops + 1 end end end
   l.rogues()
@@ -76,8 +76,10 @@ function eg.clone(     d)
 
 function eg.heaven(     d)
   d = DATA(the.file)
-  for _,row in pairs(d.rows) do
-    print(l.rnd(row:d2h(d)), o(row.cells)) end end
+  print""
+  for n,row in pairs(d.rows) do
+    if (n % 20) == 0 then
+     print(l.rnd(row:d2h(d)), o(row.cells)) end end end
 
 function eg.heavens(      d,rows)
   d = DATA(the.file)

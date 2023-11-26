@@ -27,7 +27,7 @@ function l.shuffle(t,   j)
   for i=#t,2,-1 do j=math.random(i); t[i],t[j]=t[j],t[i] end; return t end
 
 --- sortedItems
-function l.items(t,    n,i,u)
+function l.order(t,    n,i,u)
   u={}; for k,_ in pairs(t) do u[1+#u] = k; end
   table.sort(u)
   i=0
@@ -57,11 +57,11 @@ function l.slice(t, nGo, nStop, nInc,       u)
 function l.report(t, n,      f,u,s)
   n = n or 10 
   f = function(x) return l.fmt("%-"..n.."s",l.rnd(x,2)) end
-  for what,cells in l.items(t) do
+  for what,cells in l.order(t) do
     if not u then
-      u={f("")}; for k,v in l.items(cells) do u[1+#u]=f(k) end
+      u={f("")}; for k,v in l.order(cells) do u[1+#u]=f(k) end
       print(l.o(table.concat(u))) end
-    u = {f(what)}; for _,v in l.items(cells) do u[1+#u] = f(v)  end
+    u = {f(what)}; for _,v in l.order(cells) do u[1+#u] = f(v)  end
     print(table.concat(u)) end end
 
 -- maths -------------------------------------------------------
@@ -87,7 +87,7 @@ function l.o(t,d,     u)
   u = {}
   if #t > 0
   then for _,v in   pairs(t) do u[1+#u]=l.fmt("%s",      l.o(v,d)) end
-  else for k,v in l.items(t) do u[1+#u]=l.fmt(":%s %s",k,l.o(v,d)) end end
+  else for k,v in l.order(t) do u[1+#u]=l.fmt(":%s %s",k,l.o(v,d)) end end
   return "{"..table.concat(u," ").."}" end
 
 function l.make(s,    fun)

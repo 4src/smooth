@@ -6,18 +6,21 @@ SMOOTH : sequential model optimization
 (c)2023, Tim Menzies <timm@ieee.org>, BSD-2
 
 USAGE: 
+  lua eg.lua [OPTIONS] [ACTION]
+
+  or:
   smo = require"smooth"
   -- then see the "eg" functions in eg.lua
 
 OPTIONS:
-  -b --bins     number of bins                  = 6
-  -f --file     file name                       = ../data/auto93.csv
-  -h --help     show help                       = false
-  -k --k        low frequency hack for classes  = 1 
-  -m --m        low frequency hack for E        = 2
-  -s --seed     random seed                     = 1234567891
-  -q --quiet    hide print output               = false
-  -w --wait     classfy after seeing 'wait' items = 20]]
+  -b --bins    number of bins                    = 6
+  -f --file    file name                         = ../data/auto93.csv
+  -h --help    show help                         = false
+  -k --k       low frequency hack for classes    = 1 
+  -m --m       low frequency hack for E          = 2
+  -s --seed    random seed                       = 1234567891
+  -q --quiet   hide print output                 = false
+  -w --wait    classfy after seeing 'wait' items = 20]]
 
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW,DATA     = l.obj"ROW", l.obj"DATA"
@@ -132,7 +135,7 @@ function NB:add(row)
   if    self.all
   then  if #self.all.rows > the.wait then self:classify(row) end
         self.all:add(row)
-        self:klass():add(row) 
+        self:klass(row):add(row)
   else  self.all = DATA({row}) end end
 
 function NB:classify(row,     got,want)
