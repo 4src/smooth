@@ -131,18 +131,21 @@ function NUM:like(v,_,     nom,denom)
   return nom/denom end
 
 -- NB ----------------------------------------------------------
-function NB:new(src,  wait)
-  self.datas, self.n, self.all, self.abcd = {}, -1, nil,nil
+local function _adds(src,it)
   if type(src) == "string"
-  then for     t in l.csv(src)       do self:add(ROW(t),wait) end
-  else for _,row in pairs(src or {}) do self:add(row,   wait) end end end
+  then for     t in l.csv(src)       do it:add(ROW(t)) end
+  else for _,row in pairs(src or {}) do it:add(row)     end end end
 
-function NB:add(row,  wait)
+function NB:new(src)
+  self.datas, self.n, self.all, self.abcd = {}, -1, nil,nil
+  _adds(src,self) end
+
+function NB:add(row)
   self.n = self.n+1
   if    self.n>0
-  then  if self.n > (wait or the.wait) then self:classify(row) end
+  then  if self.n > the.wait then self:classify(row) end
         self:klass(row):add(row)
-  else  self.all =   DATA({row}) end end 
+  else  self.all = DATA({row}) end end
 
 function NB:classify(row,     got,want)
   got  = row:classify(self.datas)
@@ -157,9 +160,7 @@ function NB:klass(row,     k)
 -- DATA --------------------------------------------------------
 function DATA:new(src)
   self.rows, self.cols = {}, nil
-  if type(src) == "string"
-  then for     t in l.csv(src)       do self:add(ROW(t)) end
-  else for _,row in pairs(src or {}) do self:add(row) end end end
+  _adds(src,self) end
 
 function DATA:clone(rows,      clone)
   clone = DATA({ROW(self.cols.names)})
