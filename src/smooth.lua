@@ -14,13 +14,14 @@ USAGE:
 
 OPTIONS:
   -b --bins    number of bins                    = 6
+  -d --d       round nums to d decimal places    = 2
   -f --file    file name                         = ../data/auto93.csv
   -h --help    show help                         = false
   -k --k       low frequency hack for classes    = 1 
   -m --m       low frequency hack for E          = 2
   -s --seed    random seed                       = 1234567891
   -q --quiet   hide print output                 = false
-  -w --wait    classfy after seeing 'wait' items = 20]]
+  -w --wait    classfy after seeing 'wait' items = 3]]
 
 local SYM,NUM,COLS = l.obj"SYM", l.obj"NUM", l.obj"COLS"
 local ROW,DATA     = l.obj"ROW", l.obj"DATA"
@@ -75,7 +76,7 @@ function NUM:bin(x) return (.5+(x-self.mu)/self:div()/(6/the.bins))// 1 end
 function COLS:new(t,       col)
   self.all, self.x, self.y = {},{},{}
   self.names, self.klass   = t, nil
-  for at,s in pairs(t) do
+  for at,s in pairs(t) do 
     col = l.push(self.all, (s:find"^[A-Z]" and NUM or SYM)(at,s))
     if not s:find"X$" then
       (s:find"[!+-]$" and self.y or self.x)[at] = col
@@ -92,9 +93,6 @@ function COLS:adds(xycols, t)
 --- ROW --------------------------------------------------------
 function ROW:new(t) return {cells=t} end
 
-function ROW.is(x)
-  return getmetatable(x)==ROW and x or ROW(x) end
-
 function ROW:d2h(data,    n,d)
   n,d = 0,0
   for _,col in pairs(data.cols.y) do
@@ -102,8 +100,12 @@ function ROW:d2h(data,    n,d)
     d = d + (col.heaven - col:norm(self.cells[col.at]))^2 end
   return (d/n)^.5 end
 
-function ROW:classify(datas,n,h,     most,tmp,out)
-  most = -1E30 
+function ROW:klass(data)
+  return self.cells[data.cols.klass.at] end
+
+function ROW:classify(datas,     n,h,most,tmp,out)
+  most,n,h = -1E30,0,0
+  for _,data in pairs(datas) do h=h+1; n=n+#data.rows end
   for k,data in pairs(datas) do
     tmp = self:like(data,n,h)
     if tmp > most then out,most = k,tmp end end
@@ -115,46 +117,48 @@ function ROW:like(data,n,h,       prior,out,col,b,inc)
   for at,v in pairs(self.cells) do
     col = data.cols.x[at]
     if col and v ~= "?" then
-      b   = col:bin(v)
-      inc = ((col.has[b] or 0) + the.m*prior)/(col.n+the.m)
-      out = out + math.log(inc) end end
+      out = out + math.log(col:like(v,prior)) end end
   return out end
 
-function ROW:klass(data)
-  return self.cells[data.cols.klass.at] end
+function SYM:like(v,prior)
+   return ((self.has[v] or 0) + the.m*prior)/(self.n+the.m) end
+
+function NUM:like(v,_,     nom,denom)
+  if v > self.mu + 4*self.sd then return 0 end
+  if v < self.mu - 4*self.sd then return 0 end
+  nom   = math.exp(-.5*((v - self.mu)/self.sd)^2)
+  denom = (self.sd*((2*math.pi)^0.5))
+  return nom/denom end
 
 -- NB ----------------------------------------------------------
-function NB:new(src,wait)
-  self.datas, self.h, self.all, self.abcd = {}, 0, nil, nil
+function NB:new(src,  wait)
+  self.datas, self.n, self.all, self.abcd = {}, -1, nil,nil
   if type(src) == "string"
-  then for     t in l.csv(src)       do self:add(t) end
-  else for _,row in pairs(src or {}) do self:add(row) end end end
+  then for     t in l.csv(src)       do self:add(ROW(t),wait) end
+  else for _,row in pairs(src or {}) do self:add(row,   wait) end end end
 
-function NB:add(row)
-  row = ROW.is(row)
-  if    self.all
-  then  if #self.all.rows > the.wait then self:classify(row) end
-        self.all:add(row)
+function NB:add(row,  wait)
+  self.n = self.n+1
+  if    self.n>0
+  then  if self.n > (wait or the.wait) then self:classify(row) end
         self:klass(row):add(row)
-  else  self.all = DATA({row}) end end
+  else  self.all =   DATA({row}) end end 
 
 function NB:classify(row,     got,want)
-  got  = row:classify(self.datas, #self.all.rows, self.h)
+  got  = row:classify(self.datas)
   want = row:klass(self.all)
   self.abcd = ABCD.adds(self.abcd,want,got) end
 
 function NB:klass(row,     k)
   k = row:klass(self.all)
-  if not self.datas[k] then
-    self.h = self.h + 1
-    self.datas[k] = DATA({row}) end
+  self.datas[k] = self.datas[k] or self.all:clone()
   return self.datas[k] end
 
 -- DATA --------------------------------------------------------
 function DATA:new(src)
   self.rows, self.cols = {}, nil
   if type(src) == "string"
-  then for     t in l.csv(src)       do self:add(t) end
+  then for     t in l.csv(src)       do self:add(ROW(t)) end
   else for _,row in pairs(src or {}) do self:add(row) end end end
 
 function DATA:clone(rows,      clone)
@@ -163,7 +167,6 @@ function DATA:clone(rows,      clone)
   return clone end
 
 function DATA:add(row)
-  row = ROW.is(row)
   if   self.cols
   then self.cols:xs(row):ys(row)
        push(self.rows, row)
@@ -194,11 +197,12 @@ function ABCD:accuracy()  return (self.a+self.d)/(self.a+self.b+self.c+self.d+1E
 function ABCD:precision() return self.d/(self.c+self.d+1E-30) end
 
 function ABCD:stats()
-  return { _n=self.a+self.b+self.c+self.d,
-           _a=self.a, _b=self.b, _c=self.c,  _d=self.d,
-           acc=self:accuracy(), prec=self:precision(), pd=self:recall(), pf=self:pf(),
-           f=self:f(),
-           g=self:g()} end
+  return { 
+    _n=self.a+self.b+self.c+self.d,
+    _a=self.a, _b=self.b, _c=self.c,  _d=self.d,
+    acc=self:accuracy(),  prec=self:precision(), 
+    pd=self:recall(),     pf=self:pf(),
+    f=self:f(),           g=self:g()} end
 
 function ABCD.adds(t,want,got)
   t = t or {all={},n=0}

@@ -66,8 +66,8 @@ function eg.data(     d)
   print(the.file)
   d = DATA(the.file)
   for _,col in pairs(d.cols.all) 
-     do print(o{txt=col.txt,mid=col:mid(), div=col:div()}) end
-  print(o(d:stats(10))) end
+     do print(l.o{txt=col.txt,mid=col:mid(), div=col:div()}) end
+  print(o(d:stats(3))) end
 
 function eg.clone(     d)
   d = DATA(the.file)
@@ -78,7 +78,7 @@ function eg.heaven(     d)
   d = DATA(the.file)
   print""
   for n,row in pairs(d.rows) do
-    if (n % 20) == 0 then
+    if (n % 30) == 0 then
      print(l.rnd(row:d2h(d)), o(row.cells)) end end end
 
 function eg.heavens(      d,rows)
@@ -90,14 +90,18 @@ function eg.heavens(      d,rows)
            last  = d:clone( l.slice(rows,-20)  ):stats()} end
 
 function eg.abcd(     x)
+  print""
   for _ = 1,6 do x= ABCD.adds(x,"yes",   "yes") end
   for _ = 1,2 do x= ABCD.adds(x,"no",    "no") end
   for _ = 1,5 do x= ABCD.adds(x,"maybe", "maybe") end
   x= ABCD.adds(x,"maybe","no")
-  print""
+  
   l.report(ABCD.report(x),6) end
 
 function eg.nb(     nb)
-  nb=NB("../data/diabetes.csv") end
+  print"" 
+  nb=NB("../data/diabetes.csv")
+  l.report(ABCD.report(nb.abcd),6) end
+
 ----------------------------------------------------------------
 run()

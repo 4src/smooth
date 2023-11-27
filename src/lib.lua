@@ -68,7 +68,7 @@ function l.report(t, n,      f,u,s)
 function l.rnd(x,  d)
   if type(x) ~= "number" then return x end
   if math.floor(x) == x then return x
-  else local mult = 10^(d or 2)
+  else local mult = 10^(d  or 2)
        return math.floor(x*mult+0.5)/mult end end
 
 function l.ent(t,     e,N)
@@ -80,14 +80,11 @@ function l.ent(t,     e,N)
 -- strings -----------------------------------------------------
 l.fmt=string.format
 
-function l.o(t,d,     u)
-  if type(t) == "function" then return "()" end
-  if type(t) == "number"   then return l.fmt("%s",l.rnd(t,d)) end
-  if type(t) ~= "table"    then return l.fmt("%s",t) end
-  u = {}
-  if #t > 0
-  then for _,v in   pairs(t) do u[1+#u]=l.fmt("%s",      l.o(v,d)) end
-  else for k,v in l.order(t) do u[1+#u]=l.fmt(":%s %s",k,l.o(v,d)) end end
+function l.o(it,d,          u,fun)
+  function fun(k,x) return #it==0 and l.fmt(":%s %s",k,x) or x end
+  if type(it) == "number" then return tostring(l.rnd(it,d)) end
+  if type(it) ~= "table"  then return tostring(it) end
+  u={}; for k,v in l.order(it) do u[1+#u] = tostring(fun(k, l.o(v,d))) end
   return "{"..table.concat(u," ").."}" end
 
 function l.make(s,    fun)
