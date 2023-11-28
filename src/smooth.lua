@@ -69,7 +69,7 @@ function NUM:norm(x)
   return x=="?" and x or (x - self.lo)/ (self.hi - self.lo + 1e-30) end
 
 function NUM:bin(x) return (.5+(x-self.mu)/self:div()/(6/the.bins))// 1 end
-  function SYM:bin(x) return x end
+function SYM:bin(x) return x end
 
 -- COLS ---------------------------------------------------------
 --- colsmake
@@ -190,15 +190,15 @@ function ABCD:add(want,got)
   then if want==got       then self.d=self.d+1 else self.b=self.b+1 end
   else if got==self.klass then self.c=self.c+1 else self.a=self.a+1 end end end
 
-function ABCD:f(    p,r)  p,r=self:precision(),self:recall(); return (2*p*r)/(p+r) end
-function ABCD:g(    nf,r) nf,r=1-self:pf(),self:recall(); return (2*nf*r)/(nf+r) end
+function ABCD:f()         local p,r=self:precision(),self:recall(); return (2*p*r)/(p+r)   end
+function ABCD:g()         local nf,r=1-self:pf(),    self:recall(); return (2*nf*r)/(nf+r) end
 function ABCD:pf()        return self.c/(self.a+self.c+1E-30) end
 function ABCD:recall()    return self.d/(self.b+self.d+1E-30) end
 function ABCD:accuracy()  return (self.a+self.d)/(self.a+self.b+self.c+self.d+1E-30) end
 function ABCD:precision() return self.d/(self.c+self.d+1E-30) end
 
 function ABCD:stats()
-  return { 
+  return {
     _n=self.a+self.b+self.c+self.d,
     _a=self.a, _b=self.b, _c=self.c,  _d=self.d,
     acc=self:accuracy(),  prec=self:precision(), 
@@ -214,47 +214,6 @@ function ABCD.adds(t,want,got)
 
 function ABCD.report(t,     u)
   u={}; for k,abcd in pairs(t.all) do u[k] = abcd:stats() end; return u end
-
--- function NB:new(src)
---   self.all, self.scores, self.klasses = nil,{},{}
---   if   type(src) == "string"
---   then for     t in l.csv(src)       do self:add(ROW(t))      end
---   else for _,row in pairs(src or {}) do self:add(row) end end end
-
--- function NB:add(row)
---   if not self.all then self.all = DATA({row}) else
---     k = row.cells[self.all.cols.klass.at]
---     self.klasses[k] = self.klass[k] or self.all:clone()
---     self.scores[k] = self.scores[k] or {a=0,b=0,c=0,d=0}
---     self.all:add(row)
---     self.klasses[k]:add(row) end end
-
-
-  
-  -- self.all:add(row)
-
-  -- if self.all
-  -- else self.all = 
---   for t in csv(src)
-
---   self.rows, self.cols = {}, nil
---   if type(src)=="string" 
---   then for  t in l.csv(the.file)   do self:add(ROW(t)) end
---   else for _,t in pairs(src or {}) do self:add(t) end end end
--- function main()
---   cols = nil
---   ds = NUM()
---   rows, seen = {},{}
---   for t in csv(file) do  l.push(rows,t) end
---   for n,t in pairs(l.shuffle(rows)) do
---     if n==1 then cols=COLS(t) else l.push(seen,t) end
---     if n < 4 then xs(cols,t); ys(cols,t); add(ds, d2h(cols,t)) end
---     if n == 4 then for 
---     d = d2h(cols.t)
---     if d > mid(ds) 
---     add(ds,d)
-
---       adds(cols,"x",t)
 
 return {the=the, help=help, SYM=SYM, NUM=NUM,
         COLS=COLS, ROW=ROW, DATA=DATA, NB=NB, ABCD=ABCD}
