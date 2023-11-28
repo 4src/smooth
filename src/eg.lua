@@ -1,7 +1,7 @@
 local smo = require"smooth"
 local l   = require"lib"
 
-local o,push        = l.o, l.push
+local o,csv,push        = l.o, l.csv, l.push
 local the           = smo.the
 local SYM,NUM,COLS  = smo.SYM,  smo.NUM, smo.COLS
 local COLS,ROW,DATA = smo.COLS, smo.ROW, smo.DATA
@@ -52,7 +52,7 @@ function eg.num(     n,md,sd)
   return 50 < md and md < 51 and 29 < sd and sd < 30 end
 
 function eg.csv(      n)
-  n=0; for t in l.csv(the.file) do
+  n=0; for _,t in l.csv(the.file) do
     if n>0 then assert(type(t[1])=="number") end
     n = n + #t end
   return n ==399*8 end
@@ -64,25 +64,25 @@ function eg.cols(     c)
 
 function eg.data(     d)
   print(the.file)
-  d = DATA(the.file)
-  for _,col in pairs(d.cols.all) 
-     do print(l.o{txt=col.txt,mid=col:mid(), div=col:div()}) end
+  d = DATA(csv(the.file,ROW))
+  for n,col in pairs(d.cols.all) 
+     do print(n,l.o{txt=col.txt,mid=col:mid(), div=col:div()}) end
   print(o(d:stats(3))) end
 
 function eg.clone(     d)
-  d = DATA(the.file)
+  d = DATA(csv(the.file,ROW))
   print("\n"..o(d:stats()))
   print(o(d:clone(d.rows):stats())) end
 
 function eg.heaven(     d)
-  d = DATA(the.file)
+  d = DATA(csv(the.file,ROW))
   print""
   for n,row in pairs(d.rows) do
     if (n % 30) == 0 then
      print(l.rnd(row:d2h(d)), o(row.cells)) end end end
 
 function eg.heavens(      d,rows)
-  d = DATA(the.file)
+  d = DATA(csv(the.file,ROW))
   rows = d:sorted()
   print""
   l.report{base  = d:stats(),
@@ -95,13 +95,11 @@ function eg.abcd(     x)
   for _ = 1,2 do x= ABCD.adds(x,"no",    "no") end
   for _ = 1,5 do x= ABCD.adds(x,"maybe", "maybe") end
   x= ABCD.adds(x,"maybe","no")
-  
   l.report(ABCD.report(x),6) end
 
 function eg.nb(     nb)
   print"" 
-  nb=NB("../data/diabetes.csv")
+  nb = NB(csv("../data/diabetes.csv",ROW))
   l.report(ABCD.report(nb.abcd),6) end
-
-----------------------------------------------------------------
+----------------------------------------------------------
 run()

@@ -91,13 +91,20 @@ function l.make(s,    fun)
   function fun(s) return s=="true" or (s~="false" and s) end
   return math.tointeger(s) or tonumber(s) or fun(s:match'^%s*(.*%S)') end
 
-function l.csv(sFilename,   src) 
+function l.csv(sFilename,   filter, src,i)
   src = io.input(sFilename)
+  filter = filter or function(x) return x end
+  i=0
   return function(    s,t)
     s = io.read()
     if   s 
-    then t={}; for s1 in s:gmatch("([^,]+)") do l.push(t,l.make(s1)) end; return t
+    then i=i+1; t={}
+         for s1 in s:gmatch("([^,]+)") do l.push(t,l.make(s1)) end; 
+         return i,filter(t)
     else io.close(src) end end end
+
+function l.items(t,     i)
+  i=0; return function() if i < #t then i=i+1; return i,t[i] end end end
 
 -- settings ----------------------------------------------------
 function l.settings(s,    t,pat)
