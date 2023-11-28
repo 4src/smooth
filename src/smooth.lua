@@ -31,12 +31,13 @@ local o,push = l.o,l.push
 -- SYM, NUM ----------------------------------------------------
 --- colnew
 function SYM:new(at,s) 
-    return {symp=true, at=at, txt=s, n=0, has={}, mode=nil, most=0}  end
+    return { at=at, txt=s, n=0,  use= not (s or ""):find"X$",
+            has={}, mode=nil, most=0}  end
 
 function NUM:new(at,s) 
-  return {at=at, txt=s, n=0, mu=0, m2=0, sd=0, 
-          lo=1E30, hi= -1E30,
-          heaven = (s or ""):find"-$" and 0 or 1} end
+  return { at=at, txt=s, n=0,  use= not (s or ""):find"X$",
+           mu=0, m2=0, sd=0, lo=1E30, hi= -1E30,
+           heaven = (s or ""):find"-$" and 0 or 1} end
 
 --- coladd
 function NUM:add(x,     d)
@@ -78,7 +79,7 @@ function COLS:new(t,       col)
   self.names, self.klass   = t, nil
   for at,s in pairs(t) do 
     col = l.push(self.all, (s:find"^[A-Z]" and NUM or SYM)(at,s))
-    if not s:find"X$" then
+    if col.use then
       (s:find"[!+-]$" and self.y or self.x)[at] = col
       if s:find"!$" then self.klass = col end end end end
 
