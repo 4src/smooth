@@ -132,9 +132,15 @@ function NUM:like(v,_,     nom,denom)
   return nom/denom end
 
 -- NB ----------------------------------------------------------
+local function _adds(self,src)
+  if   type(src)=="string"
+  then for t   in l.csv(src)       do self:add(ROW(t)) end
+  else for row in pairs(src or {}) do self:add(row) end end
+  return self end
+
 function NB:new(src)
   self.datas, self.all, self.abcd = {}, nil,nil
-  for n,row in src do self:add(row,n) end end
+  _adds(self,src)  end
 
 function NB:add(row,n)
   if    n>1
@@ -155,12 +161,10 @@ function NB:klass(row,     k)
 -- DATA --------------------------------------------------------
 function DATA:new(src)
   self.rows, self.cols = {}, nil
-  for _,row in src do self:add(row) end end
+  _adds(self,src)  end
 
-function DATA:clone(rows,      clone)
-  clone = DATA(l.items{ROW(self.cols.names)})
-  for _,row in pairs(rows or {}) do clone:add(row) end
-  return clone end
+function DATA:clone(src)
+  return _adds(DATA({ROW(self.cols.names)}), src) end
 
 function DATA:add(row)
   if   self.cols

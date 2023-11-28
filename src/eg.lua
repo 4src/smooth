@@ -64,25 +64,25 @@ function eg.cols(     c)
 
 function eg.data(     d)
   print(the.file)
-  d = DATA(csv(the.file,ROW))
+  d = DATA(the.file)
   for n,col in pairs(d.cols.all) 
      do print(n,l.o{txt=col.txt,mid=col:mid(), div=col:div()}) end
   print(o(d:stats(3))) end
 
 function eg.clone(     d)
-  d = DATA(csv(the.file,ROW))
+  d = DATA(the.file)
   print("\n"..o(d:stats()))
   print(o(d:clone(d.rows):stats())) end
 
 function eg.heaven(     d)
-  d = DATA(csv(the.file,ROW))
+  d = DATA(the.file)
   print""
   for n,row in pairs(d.rows) do
     if (n % 30) == 0 then
      print(l.rnd(row:d2h(d)), o(row.cells)) end end end
 
 function eg.heavens(      d,rows)
-  d = DATA(csv(the.file,ROW))
+  d = DATA(the.file)
   rows = d:sorted()
   print""
   l.report{base  = d:stats(),
@@ -99,7 +99,7 @@ function eg.abcd(     x)
 
 function eg.nb(     nb)
   print"" 
-  nb = NB(csv("../data/diabetes.csv",ROW))
+  nb = NB("../data/diabetes.csv")
   l.report(ABCD.report(nb.abcd),6) end
 ----------------------------------------------------------
 run()
