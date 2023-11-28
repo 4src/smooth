@@ -161,7 +161,7 @@ function NB:klass(row,     k)
 
 -- DATA --------------------------------------------------------
 function DATA:new(src)
-  self.rows, self.cols = {}, nil
+  self.rows, self.cols = {}, nil 
   _adds(self,src)  end
 
 function DATA:clone(src)
