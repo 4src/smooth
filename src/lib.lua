@@ -92,7 +92,8 @@ function l.make(s,    fun)
   return math.tointeger(s) or tonumber(s) or fun(s:match'^%s*(.*%S)') end
 
 function l.csv(src)
-  src = io.input(src)
+  print(100)
+  src = src=="" and io.input() or io.input(src)
   return function(    s,t)
     s = io.read()
     if   s 

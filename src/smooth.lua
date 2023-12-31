@@ -213,7 +213,7 @@ function ABCD.adds(t,want,got)
   return t end
 
 function ABCD.report(t,     u)
-  u={}; for k,abcd in pairs(t.all) do u[k] = abcd:stats() end; return u end
+  u={}; for k,abqcd in pairs(t.all) do u[k] = abcd:stats() end; return u end
 
 return {the=the, help=help, SYM=SYM, NUM=NUM,
         COLS=COLS, ROW=ROW, DATA=DATA, NB=NB, ABCD=ABCD}
